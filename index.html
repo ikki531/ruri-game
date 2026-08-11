@@ -160,10 +160,10 @@ $('stars').textContent=stars;
 let timer=null;
 let welcomeLoopTimer=null;
 
-// 🎵 BGM設定
+// 🎵 BGM設定（音量を0.125に変更＝前回の半分）
 const bgmAudio = new Audio('bgm.mp3');
 bgmAudio.loop = true;
-bgmAudio.volume = 0.25; // 声が聴こえやすいよう控えめの音量
+bgmAudio.volume = 0.125; 
 let isBgmEnabled = true;
 
 function startBGM() {
