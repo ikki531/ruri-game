@@ -156,8 +156,17 @@ let timer=null;
 
 function addStar(n=1){ stars+=n; localStorage.setItem('ruriStars',stars); $('stars').textContent=stars; }
 
-// 🎵 WAV音声再生関数（ファイルがなければブラウザ読み上げ）
+// 🎵 WAV音声再生関数
 function playVoice(filename, fallbackText) {
+  if(!filename) {
+    if('speechSynthesis' in window) {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(fallbackText);
+      u.lang = 'ja-JP'; u.rate = 1.15; u.pitch = 1.4;
+      speechSynthesis.speak(u);
+    }
+    return;
+  }
   const audio = new Audio(filename);
   audio.play().catch(() => {
     if('speechSynthesis' in window) {
@@ -251,7 +260,12 @@ function nextColor(){
 }
 
 /* どうぶつタッチ */
-const animals=[['いぬ','🐶','わんわん！'],['ねこ','🐱','にゃー！'],['うさぎ','🐰','ぴょん！'],['くま','🐻','がおー！'],['ぞう','🐘','ぱおーん！'],['ライオン','🦁','がおー！'],['ぶた','🐷','ぶー！'],['ひよこ','🐥','ぴよぴよ！']];
+const animals=[
+  ['いぬ','🐶','わんわん！','inu.wav'],['ねこ','🐱','にゃー！','neko.wav'],
+  ['うさぎ','🐰','ぴょん！','usagi.wav'],['くま','🐻','がおー！','kuma.wav'],
+  ['ぞう','🐘','ぱおーん！','zou.wav'],['ライオン','🦁','がおー！','lion.wav'],
+  ['ぶた','🐷','ぶー！','buta.wav'],['ひよこ','🐥','ぴよぴよ！','hiyoko.wav']
+];
 let animalAnswer;
 function startAnimal(){show('animal');nextAnimal()}
 function nextAnimal(){
@@ -262,18 +276,21 @@ function nextAnimal(){
     const b=document.createElement('button');b.className='animalChoice';b.textContent=a[1];
     b.onclick=()=>{
       if(a===animalAnswer){
-        playSound('correct');launchConfetti();addStar();feedback('animalFeedback','🎉');playVoice('seikai.wav', 'せいかい！');setTimeout(nextAnimal,1000);
+        playSound('correct');launchConfetti();addStar();feedback('animalFeedback','🎉');playVoice('seikai.wav', 'せいかい！');setTimeout(nextAnimal,1200);
       }else{
         playSound('wrong');feedback('animalFeedback','😊');playVoice('mouikkai.wav', 'もういっかい');
       }
     };
     $('animalChoices').appendChild(b);
   });
-  playVoice('', animalAnswer[0]+'はどこかな？');
+  playVoice(animalAnswer[3], animalAnswer[0]+'はどこかな？');
 }
 
 /* すうじタッチ */
-const numbers=[['いち','1'],['に','2'],['さん','3'],['よん','4'],['ご','5']];
+const numbers=[
+  ['いち','1','num1.wav'],['に','2','num2.wav'],
+  ['さん','3','num3.wav'],['よん','4','num4.wav'],['ご','5','num5.wav']
+];
 let numberAnswer;
 function startNumber(){show('numberGame');nextNumber()}
 function nextNumber(){
@@ -284,18 +301,21 @@ function nextNumber(){
     const b=document.createElement('button');b.className='animalChoice';b.textContent=n[1];b.style.fontSize='50px';b.style.fontWeight='900';
     b.onclick=()=>{
       if(n===numberAnswer){
-        playSound('correct');launchConfetti();addStar();feedback('numberFeedback','⭕');playVoice('seikai.wav', 'せいかい！');setTimeout(nextNumber,900);
+        playSound('correct');launchConfetti();addStar();feedback('numberFeedback','⭕');playVoice('seikai.wav', 'せいかい！');setTimeout(nextNumber,1200);
       }else{
         playSound('wrong');feedback('numberFeedback','もういっかい！');playVoice('mouikkai.wav', 'もういっかい');
       }
     };
     $('numberChoices').appendChild(b);
   });
-  playVoice('', numberAnswer[1]+'をタッチしてね');
+  playVoice(numberAnswer[2], numberAnswer[1]+'をタッチしてね');
 }
 
 /* かたちタッチ */
-const shapes=[['まる','🔴'],['さんかく','🔺'],['しかく','🟦'],['ほし','⭐'],['ハート','🩷']];
+const shapes=[
+  ['まる','🔴','maru.wav'],['さんかく','🔺','sankaku.wav'],
+  ['しかく','🟦','sikaku.wav'],['ほし','⭐','hoshi.wav'],['ハート','🩷','heart.wav']
+];
 let shapeAnswer;
 function startShape(){show('shapeGame');nextShape()}
 function nextShape(){
@@ -306,14 +326,14 @@ function nextShape(){
     const b=document.createElement('button');b.className='animalChoice';b.textContent=s[1];
     b.onclick=()=>{
       if(s===shapeAnswer){
-        playSound('correct');launchConfetti();addStar();feedback('shapeFeedback','⭕');playVoice('seikai.wav', 'せいかい！');setTimeout(nextShape,900);
+        playSound('correct');launchConfetti();addStar();feedback('shapeFeedback','⭕');playVoice('seikai.wav', 'せいかい！');setTimeout(nextShape,1200);
       }else{
         playSound('wrong');feedback('shapeFeedback','もういっかい！');playVoice('mouikkai.wav', 'もういっかい');
       }
     };
     $('shapeChoices').appendChild(b);
   });
-  playVoice('', shapeAnswer[0]+'をタッチしてね');
+  playVoice(shapeAnswer[2], shapeAnswer[0]+'をタッチしてね');
 }
 
 /* ふうせん */
