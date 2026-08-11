@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>るりちゃんのゲームランド</title>
+<style>
+  :root{
+    --bg:#fff7df; --ink:#4b3b32; --card:#ffffff;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;color:var(--ink);background:var(--bg)}
+  button{font:inherit;border:0;touch-action:manipulation}
+  #app{height:100%;height:100dvh;display:flex;flex-direction:column;position:relative}
+  header{padding:max(12px,env(safe-area-inset-top)) 16px 10px;display:flex;align-items:center;justify-content:space-between;background:#fff;box-shadow:0 2px 10px #00000012;z-index:10}
+  .title{font-size:clamp(20px,5vw,30px);font-weight:900}
+  .stars{background:#fff1a8;border-radius:999px;padding:8px 14px;font-size:18px;font-weight:900;box-shadow:inset 0 -2px #e9cf59}
+  main{flex:1;min-height:0;position:relative;overflow:hidden}
+  .screen{position:absolute;inset:0;display:none;overflow:auto;padding:18px max(16px,env(safe-area-inset-left)) max(24px,env(safe-area-inset-bottom))}
+  .screen.active{display:block}
+  .home{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px}
+  .hero{font-size:clamp(54px,16vw,90px);animation:bob 1.7s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(-8px) rotate(2deg)}}
+  h1{margin:0;font-size:clamp(27px,7vw,42px)}
+  .subtitle{font-size:18px;font-weight:700}
+  .games{width:min(760px,100%);display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .gameBtn{background:#fff;border-radius:24px;padding:18px 10px;min-height:140px;box-shadow:0 7px 0 #eadfca;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;font-weight:900}
+  .gameBtn:active{transform:translateY(5px);box-shadow:0 2px 0 #eadfca}
+  .gameIcon{font-size:55px}.gameName{font-size:20px}.gameDesc{font-size:13px;color:#78675b}
+  .back{position:absolute;top:12px;left:12px;background:#fff;border-radius:999px;padding:9px 14px;font-weight:900;z-index:20;box-shadow:0 3px 8px #0002}
+  .gameTitle{text-align:center;font-size:clamp(23px,6vw,32px);font-weight:900;margin:8px 0 12px}
+  .prompt{text-align:center;font-size:clamp(20px,5vw,29px);font-weight:900;margin:8px 0 14px}
+  .bigArea{height:calc(100% - 85px);min-height:350px;position:relative;overflow:hidden;border-radius:28px;background:#dff6ff;box-shadow:inset 0 0 0 4px #fff}
+  .feedback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font-size:clamp(50px,16vw,100px);font-weight:900;z-index:50;opacity:0}
+  .feedback.show{animation:feedback .65s ease}
+  @keyframes feedback{0%{opacity:0;transform:scale(.5)}35%{opacity:1;transform:scale(1.15)}100%{opacity:0;transform:scale(1)}}
+  .colorChoices{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:min(650px,100%);margin:auto}
+  .colorChoice{min-height:125px;border-radius:28px;box-shadow:0 7px 0 #0002}
+  .colorChoice:active{transform:translateY(5px);box-shadow:0 2px 0 #0002}
+  .animalChoice{background:#fff;border-radius:28px;min-height:150px;box-shadow:0 7px 0 #eadfca;font-size:70px}
+  .animalChoice:active{transform:translateY(5px);box-shadow:0 2px 0 #eadfca}
+  .choiceGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:min(650px,100%);margin:auto}
+  .balloon{position:absolute;border-radius:50% 50% 46% 46%;width:76px;height:92px;box-shadow:inset -10px -12px 15px #0002, inset 8px 8px 10px #fff8;animation:floatUp linear forwards}
+  .balloon:after{content:"";position:absolute;width:2px;height:45px;background:#777;left:50%;top:90px}
+  @keyframes floatUp{from{transform:translateY(110vh)}to{transform:translateY(-180px)}}
+  .pop{animation:pop .18s ease forwards!important}
+  @keyframes pop{to{transform:scale(1.5);opacity:0}}
+  .scorePill{position:absolute;right:12px;top:12px;background:#fff;padding:9px 14px;border-radius:999px;font-weight:900;z-index:10}
+  .car{position:absolute;font-size:70px;left:-100px;bottom:22px;animation:drive 5s linear infinite}
+  @keyframes drive{to{left:calc(100% + 100px)}}
+  .road{position:absolute;left:0;right:0;bottom:0;height:100px;background:#777;border-top:8px solid #fff}
+  .road:after{content:"";position:absolute;left:0;right:0;top:43px;border-top:8px dashed #ffe36e}
+  .tapTarget{position:absolute;font-size:72px;user-select:none}
+  .tapTarget:active{transform:scale(.85)}
+  .homeBtn{margin-top:14px;background:#fff;border-radius:999px;padding:11px 20px;font-weight:900;box-shadow:0 4px 0 #ddd}
+  @media(min-width:700px){.games{grid-template-columns:repeat(3,1fr)}.colorChoices{grid-template-columns:repeat(4,1fr)}.choiceGrid{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+  <div class="title">🌈 るりちゃんのゲームランド</div>
+  <div class="stars">⭐ <span id="stars">0</span></div>
+</header>
+<main>
+<section id="home" class="screen active home">
+  <div class="hero">🦁🎈</div>
+  <h1>たのしく あそぼう！</h1>
+  <div class="subtitle">すきなゲームをタッチしてね 👆</div>
+  <div class="games">
+    <button class="gameBtn" onclick="startColor()"><div class="gameIcon">🌈</div><div class="gameName">いろタッチ</div><div class="gameDesc">おなじ いろをさがそう</div></button>
+    <button class="gameBtn" onclick="startAnimal()"><div class="gameIcon">🐶</div><div class="gameName">どうぶつ</div><div class="gameDesc">どうぶつをさがそう</div></button>
+    <button class="gameBtn" onclick="startBalloons()"><div class="gameIcon">🎈</div><div class="gameName">ふうせん</div><div class="gameDesc">タッチで パーン！</div></button>
+    <button class="gameBtn" onclick="startStars()"><div class="gameIcon">⭐</div><div class="gameName">ほしあつめ</div><div class="gameDesc">ほしをタッチしよう</div></button>
+    <button class="gameBtn" onclick="startCars()"><div class="gameIcon">🚗</div><div class="gameName">くるま</div><div class="gameDesc">くるまをタッチ！</div></button>
+    <button class="gameBtn" onclick="speak('いっしょに あそぼう！')"><div class="gameIcon">🔊</div><div class="gameName">おしゃべり</div><div class="gameDesc">おなまえを よんでね</div></button>
+  </div>
+</section>
+
+<section id="color" class="screen">
+<button class="back" onclick="goHome()">← もどる</button>
+<div class="gameTitle">🌈 いろタッチ</div>
+<div class="prompt" id="colorPrompt"></div>
+<div class="colorChoices" id="colorChoices"></div>
+<div class="feedback" id="colorFeedback"></div>
+</section>
+
+<section id="animal" class="screen">
+<button class="back" onclick="goHome()">← もどる</button>
+<div class="gameTitle">🐶 どうぶつタッチ</div>
+<div class="prompt" id="animalPrompt"></div>
+<div class="choiceGrid" id="animalChoices"></div>
+<div class="feedback" id="animalFeedback"></div>
+</section>
+
+<section id="balloons" class="screen">
+<button class="back" onclick="goHome()">← もどる</button>
+<div class="gameTitle">🎈 ふうせん パーン！</div>
+<div class="prompt">ふうせんを タッチしてね！</div>
+<div class="bigArea" id="balloonArea"><div class="scorePill">🎈 <span id="balloonScore">0</span></div></div>
+</section>
+
+<section id="starsGame" class="screen">
+<button class="back" onclick="goHome()">← もどる</button>
+<div class="gameTitle">⭐ ほしあつめ</div>
+<div class="prompt">ほしを みつけて タッチ！</div>
+<div class="bigArea" id="starArea"></div>
+</section>
+
+<section id="cars" class="screen">
+<button class="back" onclick="goHome()">← もどる</button>
+<div class="gameTitle">🚗 くるま タッチ</div>
+<div class="prompt">くるまを タッチしてね！</div>
+<div class="bigArea" id="carArea">
+  <div class="road"></div>
+  <div class="car" id="car">🚙</div>
+</div>
+</section>
+</main>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let stars=Number(localStorage.getItem('ruriStars')||0);
+$('stars').textContent=stars;
+let timer=null;
+
+function addStar(n=1){
+  stars+=n; localStorage.setItem('ruriStars',stars); $('stars').textContent=stars;
+}
+function speak(text){
+  if('speechSynthesis' in window){speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(text); u.lang='ja-JP';u.rate=.9;u.pitch=1.25;speechSynthesis.speak(u)}
+}
+function beep(ok=true){
+  try{
+    const C=window.AudioContext||window.webkitAudioContext; const c=new C(),o=c.createOscillator(),g=c.createGain();
+    o.frequency.value=ok?700:180;o.type='sine';g.gain.setValueAtTime(.0001,c.currentTime);g.gain.exponentialRampToValueAtTime(.16,c.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.18);o.connect(g).connect(c.destination);o.start();o.stop(c.currentTime+.2);
+  }catch(e){}
+}
+function feedback(id,text){
+  const el=$(id);el.textContent=text;el.classList.remove('show');void el.offsetWidth;el.classList.add('show');
+}
+function show(id){
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');
+}
+function goHome(){clearInterval(timer);timer=null;show('home')}
+function shuffle(a){return a.sort(()=>Math.random()-.5)}
+
+const colors=[
+  ['あか','#ff5b5b','🔴'],['あお','#4aa8ff','🔵'],['きいろ','#ffd84a','🟡'],['みどり','#5dcc78','🟢'],
+  ['むらさき','#a875e8','🟣'],['ピンク','#ff8ac5','🩷']
+];
+let colorAnswer;
+function startColor(){
+  show('color');nextColor();
+}
+function nextColor(){
+  const selected=shuffle([...colors]).slice(0,4);colorAnswer=selected[Math.floor(Math.random()*4)];
+  $('colorPrompt').textContent=`${colorAnswer[0]}を タッチしてね！ ${colorAnswer[2]}`;
+  $('colorChoices').innerHTML='';
+  shuffle(selected).forEach(c=>{
+    const b=document.createElement('button');b.className='colorChoice';b.style.background=c[1];b.setAttribute('aria-label',c[0]);
+    b.onclick=()=>{if(c===colorAnswer){beep();addStar();feedback('colorFeedback','⭕');speak('せいかい！');setTimeout(nextColor,500)}else{beep(false);feedback('colorFeedback','もういっかい！');speak('もういっかい')}};$('colorChoices').appendChild(b);
+  });
+  speak(colorAnswer[0]+'をタッチしてね');
+}
+
+const animals=[['いぬ','🐶','わんわん！'],['ねこ','🐱','にゃー！'],['うさぎ','🐰','ぴょん！'],['くま','🐻','がおー！'],['ぞう','🐘','ぱおーん！'],['ライオン','🦁','がおー！'],['ぶた','🐷','ぶー！'],['ひよこ','🐥','ぴよぴよ！']];
+let animalAnswer;
+function startAnimal(){show('animal');nextAnimal()}
+function nextAnimal(){
+  const selected=shuffle([...animals]).slice(0,4);animalAnswer=selected[Math.floor(Math.random()*4)];
+  $('animalPrompt').textContent=`${animalAnswer[0]}さんは どこ？ ${animalAnswer[2]}`;
+  $('animalChoices').innerHTML='';
+  shuffle(selected).forEach(a=>{
+    const b=document.createElement('button');b.className='animalChoice';b.textContent=a[1];b.setAttribute('aria-label',a[0]);
+    b.onclick=()=>{if(a===animalAnswer){beep();addStar();feedback('animalFeedback','🎉');speak('せいかい！'+a[2]);setTimeout(nextAnimal,600)}else{beep(false);feedback('animalFeedback','😊');speak('もういっかい')}};$('animalChoices').appendChild(b);
+  });
+}
+
+let balloonTimer;
+function startBalloons(){
+  show('balloons');$('balloonArea').querySelectorAll('.balloon').forEach(x=>x.remove());$('balloonScore').textContent='0';
+  clearInterval(balloonTimer);balloonTimer=setInterval(makeBalloon,700);
+  for(let i=0;i<4;i++)setTimeout(makeBalloon,i*250);
+}
+function makeBalloon(){
+  const area=$('balloonArea');if(!area.classList.contains('active') && $('balloons').classList.contains('active')===false)return;
+  const b=document.createElement('div');b.className='balloon';
+  const cols=['#ff5b7d','#54b9ff','#ffd84a','#65d47c','#a875e8','#ff9d4d'];
+  b.style.background=cols[Math.floor(Math.random()*cols.length)];
+  b.style.left=(5+Math.random()*88)+'%';b.style.animationDuration=(4+Math.random()*3)+'s';
+  b.onclick=()=>{b.classList.add('pop');beep();addStar();$('balloonScore').textContent=Number($('balloonScore').textContent)+1;speak('パン！');setTimeout(()=>b.remove(),200)};
+  b.ontouchstart=e=>{e.preventDefault()};area.appendChild(b);setTimeout(()=>b.remove(),7500);
+}
+
+let starTimer;
+function startStars(){
+  show('starsGame');$('starArea').innerHTML='';clearInterval(starTimer);placeStar();starTimer=setInterval(placeStar,1200);
+}
+function placeStar(){
+  if(!$('starsGame').classList.contains('active'))return;
+  const s=document.createElement('div');s.className='tapTarget';s.textContent=['⭐','🌟','💫'][Math.floor(Math.random()*3)];
+  s.style.left=(5+Math.random()*85)+'%';s.style.top=(8+Math.random()*70)+'%';
+  s.onclick=()=>{beep();addStar();s.remove();speak('ゲット！')};$('starArea').appendChild(s);setTimeout(()=>s.remove(),3000);
+}
+
+function startCars(){
+  show('cars');const c=$('car');c.textContent=['🚗','🚙','🚌','🚕','🚓'][Math.floor(Math.random()*5)];
+  c.onclick=()=>{beep();addStar();feedback('carAreaFeedback','🎉');speak('ブーン！');c.style.animation='none';void c.offsetWidth;c.style.animation='drive 3s linear infinite'};
+  if(!$('carAreaFeedback')){const f=document.createElement('div');f.id='carAreaFeedback';f.className='feedback';$('carArea').appendChild(f)}
+  c.style.animation='none';void c.offsetWidth;c.style.animation='drive 5s linear infinite';
+}
+</script>
+</body>
+</html>
