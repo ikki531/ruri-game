@@ -13,7 +13,9 @@
   button{font:inherit;border:0;touch-action:manipulation}
   #app{height:100%;height:100dvh;display:flex;flex-direction:column;position:relative}
   header{padding:max(12px,env(safe-area-inset-top)) 16px 10px;display:flex;align-items:center;justify-content:space-between;background:#fff;box-shadow:0 2px 10px #00000012;z-index:100}
-  .title{font-size:clamp(18px,4.5vw,28px);font-weight:900}
+  .title{font-size:clamp(18px,4.5vw,28px);font-weight:900;cursor:pointer}
+  .header-right{display:flex;align-items:center;gap:10px}
+  .bgm-btn{background:#eef7ff;border:2px solid #bce0fd;border-radius:999px;padding:4px 10px;font-size:18px;font-weight:bold;cursor:pointer;box-shadow:0 2px 4px #0001}
   .stars{background:#fff1a8;border-radius:999px;padding:6px 14px;font-size:18px;font-weight:900;box-shadow:inset 0 -2px #e9cf59}
   main{flex:1;min-height:0;position:relative;overflow:hidden}
   
@@ -70,7 +72,10 @@
 <div id="app">
 <header>
   <div class="title" onclick="playWelcomeVoice()">🌈 るりちゃんのゲームランド</div>
-  <div class="stars">⭐ <span id="stars">0</span></div>
+  <div class="header-right">
+    <button class="bgm-btn" id="bgmToggleBtn" onclick="toggleBGM()">🎵 ON</button>
+    <div class="stars">⭐ <span id="stars">0</span></div>
+  </div>
 </header>
 <main>
 <section id="home" class="screen active home">
@@ -155,6 +160,32 @@ $('stars').textContent=stars;
 let timer=null;
 let welcomeLoopTimer=null;
 
+// 🎵 BGM設定
+const bgmAudio = new Audio('bgm.mp3');
+bgmAudio.loop = true;
+bgmAudio.volume = 0.25; // 声が聴こえやすいよう控えめの音量
+let isBgmEnabled = true;
+
+function startBGM() {
+  if (isBgmEnabled) {
+    bgmAudio.play().catch(() => {});
+  }
+}
+
+function toggleBGM() {
+  isBgmEnabled = !isBgmEnabled;
+  const btn = $('bgmToggleBtn');
+  if (isBgmEnabled) {
+    bgmAudio.play().catch(() => {});
+    btn.textContent = '🎵 ON';
+    btn.style.opacity = '1';
+  } else {
+    bgmAudio.pause();
+    btn.textContent = '🔇 OFF';
+    btn.style.opacity = '0.6';
+  }
+}
+
 function addStar(n=1){ stars+=n; localStorage.setItem('ruriStars',stars); $('stars').textContent=stars; }
 
 // 🎵 WAV音声再生関数
@@ -179,7 +210,7 @@ function playVoice(filename, fallbackText) {
   });
 }
 
-// 🏠 ホームウェルカム音声再生（手動タップ & 10秒ループ用）
+// 🏠 ホームウェルカム音声再生
 function playWelcomeVoice() {
   if ($('home').classList.contains('active')) {
     playVoice('welcome.wav', 'るりちゃんのゲームランドへようこそ！いっしょにあそぼう！');
@@ -195,7 +226,7 @@ function startWelcomeLoop() {
     } else {
       stopWelcomeLoop();
     }
-  }, 10000); // 10秒に1回
+  }, 10000);
 }
 
 function stopWelcomeLoop() {
@@ -205,8 +236,9 @@ function stopWelcomeLoop() {
   }
 }
 
-// 画面全体のどこかを最初にタッチした時にiPhoneの音声再生ロックを解除して再生を開始
-window.addEventListener('click', function initWelcome() {
+// iPhone対策: 初回タッチ時にBGMと歓迎ボイスを開始
+window.addEventListener('click', function initAudio() {
+  startBGM();
   if ($('home').classList.contains('active') && !welcomeLoopTimer) {
     startWelcomeLoop();
   }
@@ -273,7 +305,6 @@ function goHome(){
 }
 function shuffle(a){ return a.sort(()=>Math.random()-.5) }
 
-// 初期化時ホーム画面ループ開始
 startWelcomeLoop();
 
 /* 色タッチ */
