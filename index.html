@@ -21,9 +21,9 @@
   .screen.active{display:flex !important;flex-direction:column}
   
   .home{align-items:center;justify-content:center;text-align:center;gap:14px}
-  .hero{font-size:clamp(50px,14vw,80px);animation:bob 1.7s ease-in-out infinite}
+  .hero{font-size:clamp(50px,14vw,80px);animation:bob 1.7s ease-in-out infinite;cursor:pointer}
   @keyframes bob{50%{transform:translateY(-8px) rotate(2deg)}}
-  h1{margin:0;font-size:clamp(24px,6vw,36px)}
+  h1{margin:0;font-size:clamp(24px,6vw,36px);cursor:pointer}
   .subtitle{font-size:16px;font-weight:700}
   .games{width:min(760px,100%);display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
   .gameBtn{background:#fff;border-radius:22px;padding:14px 8px;min-height:120px;box-shadow:0 6px 0 #eadfca;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-weight:900}
@@ -69,13 +69,13 @@
 <body>
 <div id="app">
 <header>
-  <div class="title">🌈 るりちゃんのゲームランド</div>
+  <div class="title" onclick="playWelcomeVoice()">🌈 るりちゃんのゲームランド</div>
   <div class="stars">⭐ <span id="stars">0</span></div>
 </header>
 <main>
 <section id="home" class="screen active home">
-  <div class="hero">🦁🎈</div>
-  <h1>たのしく あそぼう！</h1>
+  <div class="hero" onclick="playWelcomeVoice()">🦁🎈</div>
+  <h1 onclick="playWelcomeVoice()">たのしく あそぼう！</h1>
   <div class="subtitle">すきなゲームをタッチしてね 👆</div>
   <div class="games">
     <button class="gameBtn" onclick="startColor()"><div class="gameIcon">🌈</div><div class="gameName">いろタッチ</div><div class="gameDesc">おなじ いろ</div></button>
@@ -153,6 +153,7 @@ const $=id=>document.getElementById(id);
 let stars=Number(localStorage.getItem('ruriStars')||0);
 $('stars').textContent=stars;
 let timer=null;
+let welcomeLoopTimer=null;
 
 function addStar(n=1){ stars+=n; localStorage.setItem('ruriStars',stars); $('stars').textContent=stars; }
 
@@ -177,6 +178,39 @@ function playVoice(filename, fallbackText) {
     }
   });
 }
+
+// 🏠 ホームウェルカム音声再生（手動タップ & 10秒ループ用）
+function playWelcomeVoice() {
+  if ($('home').classList.contains('active')) {
+    playVoice('welcome.wav', 'るりちゃんのゲームランドへようこそ！いっしょにあそぼう！');
+  }
+}
+
+function startWelcomeLoop() {
+  stopWelcomeLoop();
+  playWelcomeVoice();
+  welcomeLoopTimer = setInterval(() => {
+    if ($('home').classList.contains('active')) {
+      playWelcomeVoice();
+    } else {
+      stopWelcomeLoop();
+    }
+  }, 10000); // 10秒に1回
+}
+
+function stopWelcomeLoop() {
+  if(welcomeLoopTimer) {
+    clearInterval(welcomeLoopTimer);
+    welcomeLoopTimer = null;
+  }
+}
+
+// 画面全体のどこかを最初にタッチした時にiPhoneの音声再生ロックを解除して再生を開始
+window.addEventListener('click', function initWelcome() {
+  if ($('home').classList.contains('active') && !welcomeLoopTimer) {
+    startWelcomeLoop();
+  }
+}, { once: true });
 
 // 🎵 効果音
 function playSound(type) {
@@ -227,9 +261,20 @@ function launchConfetti(){
 }
 
 function feedback(id,text){ const el=$(id);el.textContent=text;el.classList.remove('show');void el.offsetWidth;el.classList.add('show'); }
-function show(id){ document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active'); }
-function goHome(){ clearInterval(timer);timer=null;show('home') }
+function show(id){ 
+  stopWelcomeLoop(); 
+  document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+  $(id).classList.add('active'); 
+}
+function goHome(){ 
+  clearInterval(timer);timer=null;
+  show('home');
+  startWelcomeLoop();
+}
 function shuffle(a){ return a.sort(()=>Math.random()-.5) }
+
+// 初期化時ホーム画面ループ開始
+startWelcomeLoop();
 
 /* 色タッチ */
 const colors=[
