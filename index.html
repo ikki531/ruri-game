@@ -15,46 +15,59 @@
   button{font:inherit;border:0;touch-action:manipulation}
   #app{height:100%;height:100dvh;display:flex;flex-direction:column;position:relative}
   header{padding:max(12px,env(safe-area-inset-top)) 16px 10px;display:flex;align-items:center;justify-content:space-between;background:#fff;box-shadow:0 2px 10px #00000012;z-index:100}
-  .title{font-size:clamp(20px,5vw,30px);font-weight:900}
-  .stars{background:#fff1a8;border-radius:999px;padding:8px 14px;font-size:18px;font-weight:900;box-shadow:inset 0 -2px #e9cf59}
+  .title{font-size:clamp(18px,4.5vw,28px);font-weight:900}
+  .stars{background:#fff1a8;border-radius:999px;padding:6px 14px;font-size:18px;font-weight:900;box-shadow:inset 0 -2px #e9cf59}
   main{flex:1;min-height:0;position:relative;overflow:hidden}
-  .screen{position:absolute;inset:0;display:none;overflow:auto;padding:18px max(16px,env(safe-area-inset-left)) max(24px,env(safe-area-inset-bottom));background:var(--bg);z-index:1}
-  .screen.active{display:flex;flex-direction:column}
-  .home{align-items:center;justify-content:center;text-align:center;gap:18px}
-  .hero{font-size:clamp(54px,16vw,90px);animation:bob 1.7s ease-in-out infinite}
+  
+  /* 画面切り替えの競合を防ぐ修正 */
+  .screen{position:absolute;inset:0;display:none !important;overflow:auto;padding:18px max(16px,env(safe-area-inset-left)) max(24px,env(safe-area-inset-bottom));background:var(--bg);z-index:1}
+  .screen.active{display:flex !important;flex-direction:column}
+  
+  .home{align-items:center;justify-content:center;text-align:center;gap:14px}
+  .hero{font-size:clamp(50px,14vw,80px);animation:bob 1.7s ease-in-out infinite}
   @keyframes bob{50%{transform:translateY(-8px) rotate(2deg)}}
-  h1{margin:0;font-size:clamp(27px,7vw,42px)}
-  .subtitle{font-size:18px;font-weight:700}
-  .games{width:min(760px,100%);display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-  .gameBtn{background:#fff;border-radius:24px;padding:18px 10px;min-height:140px;box-shadow:0 7px 0 #eadfca;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;font-weight:900}
-  .gameBtn:active{transform:translateY(5px);box-shadow:0 2px 0 #eadfca}
-  .gameIcon{font-size:55px}.gameName{font-size:20px}.gameDesc{font-size:13px;color:#78675b}
-  .back{position:relative;align-self:flex-start;margin-bottom:10px;background:#fff;border-radius:999px;padding:9px 14px;font-weight:900;z-index:20;box-shadow:0 3px 8px #0002}
-  .gameTitle{text-align:center;font-size:clamp(23px,6vw,32px);font-weight:900;margin:0 0 12px}
-  .prompt{text-align:center;font-size:clamp(20px,5vw,29px);font-weight:900;margin:0 0 14px}
+  h1{margin:0;font-size:clamp(24px,6vw,36px)}
+  .subtitle{font-size:16px;font-weight:700}
+  .games{width:min(760px,100%);display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .gameBtn{background:#fff;border-radius:22px;padding:14px 8px;min-height:120px;box-shadow:0 6px 0 #eadfca;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-weight:900}
+  .gameBtn:active{transform:translateY(4px);box-shadow:0 2px 0 #eadfca}
+  .gameIcon{font-size:45px}.gameName{font-size:18px}.gameDesc{font-size:12px;color:#78675b}
+  
+  .back{position:relative;align-self:flex-start;margin-bottom:10px;background:#fff;border-radius:999px;padding:8px 16px;font-weight:900;z-index:20;box-shadow:0 3px 8px #0002}
+  .gameTitle{text-align:center;font-size:clamp(22px,5vw,30px);font-weight:900;margin:0 0 8px}
+  .prompt{text-align:center;font-size:clamp(20px,4.5vw,26px);font-weight:900;margin:0 0 12px}
+  
   .bigArea{flex:1;min-height:300px;position:relative;overflow:hidden;border-radius:28px;background:#dff6ff;box-shadow:inset 0 0 0 4px #fff}
   .feedback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font-size:clamp(50px,16vw,100px);font-weight:900;z-index:50;opacity:0}
   .feedback.show{animation:feedback .65s ease}
   @keyframes feedback{0%{opacity:0;transform:scale(.5)}35%{opacity:1;transform:scale(1.15)}100%{opacity:0;transform:scale(1)}}
-  .colorChoices{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:min(650px,100%);margin:auto}
-  .colorChoice{min-height:125px;border-radius:28px;box-shadow:0 7px 0 #0002}
-  .colorChoice:active{transform:translateY(5px);box-shadow:0 2px 0 #0002}
-  .animalChoice{background:#fff;border-radius:28px;min-height:150px;box-shadow:0 7px 0 #eadfca;font-size:70px}
-  .animalChoice:active{transform:translateY(5px);box-shadow:0 2px 0 #eadfca}
-  .choiceGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:min(650px,100%);margin:auto}
+  
+  .colorChoices,.choiceGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:min(650px,100%);margin:auto}
+  .colorChoice{min-height:120px;border-radius:24px;box-shadow:0 6px 0 #0002}
+  .colorChoice:active{transform:translateY(4px);box-shadow:0 2px 0 #0002}
+  .animalChoice{background:#fff;border-radius:24px;min-height:130px;box-shadow:0 6px 0 #eadfca;font-size:65px}
+  .animalChoice:active{transform:translateY(4px);box-shadow:0 2px 0 #eadfca}
+  
   .balloon{position:absolute;border-radius:50% 50% 46% 46%;width:76px;height:92px;box-shadow:inset -10px -12px 15px #0002, inset 8px 8px 10px #fff8;animation:floatUp linear forwards}
   .balloon:after{content:"";position:absolute;width:2px;height:45px;background:#777;left:50%;top:90px}
   @keyframes floatUp{from{transform:translateY(110vh)}to{transform:translateY(-180px)}}
   .pop{animation:pop .18s ease forwards!important}
   @keyframes pop{to{transform:scale(1.5);opacity:0}}
-  .scorePill{position:absolute;right:12px;top:12px;background:#fff;padding:9px 14px;border-radius:999px;font-weight:900;z-index:10}
+  
+  .scorePill{position:absolute;right:12px;top:12px;background:#fff;padding:8px 14px;border-radius:999px;font-weight:900;z-index:10}
   .car{position:absolute;font-size:70px;left:-100px;bottom:22px;animation:drive 5s linear infinite}
   @keyframes drive{to{left:calc(100% + 100px)}}
   .road{position:absolute;left:0;right:0;bottom:0;height:100px;background:#777;border-top:8px solid #fff}
   .road:after{content:"";position:absolute;left:0;right:0;top:43px;border-top:8px dashed #ffe36e}
   .tapTarget{position:absolute;font-size:72px;user-select:none}
   .tapTarget:active{transform:scale(.85)}
-  @media(min-width:700px){.games{grid-template-columns:repeat(3,1fr)}.colorChoices{grid-template-columns:repeat(4,1fr)}.choiceGrid{grid-template-columns:repeat(4,1fr)}}
+
+  /* 🎊 紙吹雪のアニメーション */
+  .confetti-container{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden}
+  .confetti{position:absolute;width:12px;height:12px;top:-20px;animation:confettiFall 2.5s ease-out forwards}
+  @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
+
+  @media(min-width:700px){.games{grid-template-columns:repeat(4,1fr)}.colorChoices,.choiceGrid{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
@@ -69,12 +82,14 @@
   <h1>たのしく あそぼう！</h1>
   <div class="subtitle">すきなゲームをタッチしてね 👆</div>
   <div class="games">
-    <button class="gameBtn" onclick="startColor()"><div class="gameIcon">🌈</div><div class="gameName">いろタッチ</div><div class="gameDesc">おなじ いろをさがそう</div></button>
-    <button class="gameBtn" onclick="startAnimal()"><div class="gameIcon">🐶</div><div class="gameName">どうぶつ</div><div class="gameDesc">どうぶつをさがそう</div></button>
-    <button class="gameBtn" onclick="startBalloons()"><div class="gameIcon">🎈</div><div class="gameName">ふうせん</div><div class="gameDesc">タッチで パーン！</div></button>
-    <button class="gameBtn" onclick="startStars()"><div class="gameIcon">⭐</div><div class="gameName">ほしあつめ</div><div class="gameDesc">ほしをタッチしよう</div></button>
-    <button class="gameBtn" onclick="startCars()"><div class="gameIcon">🚗</div><div class="gameName">くるま</div><div class="gameDesc">くるまをタッチ！</div></button>
-    <button class="gameBtn" onclick="speak('るりちゃん、いっしょに あそぼう！')"><div class="gameIcon">🔊</div><div class="gameName">おしゃべり</div><div class="gameDesc">おなまえを よんでね</div></button>
+    <button class="gameBtn" onclick="startColor()"><div class="gameIcon">🌈</div><div class="gameName">いろタッチ</div><div class="gameDesc">おなじ いろ</div></button>
+    <button class="gameBtn" onclick="startAnimal()"><div class="gameIcon">🐶</div><div class="gameName">どうぶつ</div><div class="gameDesc">どうぶつ さがし</div></button>
+    <button class="gameBtn" onclick="startNumber()"><div class="gameIcon">🔢</div><div class="gameName">すうじ</div><div class="gameDesc">すうじ タッチ</div></button>
+    <button class="gameBtn" onclick="startShape()"><div class="gameIcon">🔷</div><div class="gameName">かたち</div><div class="gameDesc">かたち さがし</div></button>
+    <button class="gameBtn" onclick="startBalloons()"><div class="gameIcon">🎈</div><div class="gameName">ふうせん</div><div class="gameDesc">タッチで パーン</div></button>
+    <button class="gameBtn" onclick="startStars()"><div class="gameIcon">⭐</div><div class="gameName">ほしあつめ</div><div class="gameDesc">ほしを タッチ</div></button>
+    <button class="gameBtn" onclick="startCars()"><div class="gameIcon">🚗</div><div class="gameName">くるま</div><div class="gameDesc">くるま タッチ</div></button>
+    <button class="gameBtn" onclick="speak('るりちゃん、だいすき！いっしょにあそぼう！')"><div class="gameIcon">🔊</div><div class="gameName">おしゃべり</div><div class="gameDesc">タッチしてね</div></button>
   </div>
 </section>
 
@@ -92,6 +107,22 @@
 <div class="prompt" id="animalPrompt"></div>
 <div class="choiceGrid" id="animalChoices"></div>
 <div class="feedback" id="animalFeedback"></div>
+</section>
+
+<section id="numberGame" class="screen">
+<button class="back" onclick="goHome()">← もどる</button>
+<div class="gameTitle">🔢 すうじタッチ</div>
+<div class="prompt" id="numberPrompt"></div>
+<div class="choiceGrid" id="numberChoices"></div>
+<div class="feedback" id="numberFeedback"></div>
+</section>
+
+<section id="shapeGame" class="screen">
+<button class="back" onclick="goHome()">← もどる</button>
+<div class="gameTitle">🔷 かたちタッチ</div>
+<div class="prompt" id="shapePrompt"></div>
+<div class="choiceGrid" id="shapeChoices"></div>
+<div class="feedback" id="shapeFeedback"></div>
 </section>
 
 <section id="balloons" class="screen">
@@ -120,6 +151,8 @@
 </main>
 </div>
 
+<div id="confettiContainer" class="confetti-container"></div>
+
 <script>
 const $=id=>document.getElementById(id);
 let stars=Number(localStorage.getItem('ruriStars')||0);
@@ -141,14 +174,15 @@ function addStar(n=1){
   stars+=n; localStorage.setItem('ruriStars',stars); $('stars').textContent=stars;
 }
 
+// 🔊 改善版読み上げ（明るく・テンポ良く）
 function speak(text){
   if(!('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
   
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'ja-JP';
-  u.rate = 1.1;
-  u.pitch = 1.35;
+  u.rate = 1.15;  // テンポよく元気なスピード
+  u.pitch = 1.4;  // 可愛らしく高めのトーン
 
   if (voiceList.length === 0) loadVoices();
   
@@ -166,43 +200,70 @@ function speak(text){
   speechSynthesis.speak(u);
 }
 
+// 🎵 豪華Web Audio API効果音
 function playSound(type) {
   try {
     const C = window.AudioContext || window.webkitAudioContext;
     if (!C) return;
     const c = new C();
     
-    if (type === 'correct') {
-      [523.25, 659.25, 783.99].forEach((freq, i) => {
+    if (type === 'correct') { // ファンファーレ（和音）
+      [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
         const o = c.createOscillator(), g = c.createGain();
         o.type = 'triangle';
         o.frequency.value = freq;
-        g.gain.setValueAtTime(0.12, c.currentTime + i * 0.08);
-        g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + i * 0.08 + 0.25);
+        g.gain.setValueAtTime(0.12, c.currentTime + i * 0.07);
+        g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + i * 0.07 + 0.3);
         o.connect(g).connect(c.destination);
-        o.start(c.currentTime + i * 0.08);
-        o.stop(c.currentTime + i * 0.08 + 0.25);
+        o.start(c.currentTime + i * 0.07);
+        o.stop(c.currentTime + i * 0.07 + 0.3);
       });
-    } else if (type === 'wrong') {
+    } else if (type === 'wrong') { // 残念音（ポヨン）
       const o = c.createOscillator(), g = c.createGain();
       o.type = 'sine';
-      o.frequency.setValueAtTime(280, c.currentTime);
-      o.frequency.exponentialRampToValueAtTime(140, c.currentTime + 0.2);
+      o.frequency.setValueAtTime(300, c.currentTime);
+      o.frequency.exponentialRampToValueAtTime(120, c.currentTime + 0.25);
       g.gain.setValueAtTime(0.15, c.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.2);
+      g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.25);
       o.connect(g).connect(c.destination);
-      o.start(); o.stop(c.currentTime + 0.2);
-    } else if (type === 'pop') {
+      o.start(); o.stop(c.currentTime + 0.25);
+    } else if (type === 'pop') { // 風船パーン！
       const o = c.createOscillator(), g = c.createGain();
       o.type = 'sine';
-      o.frequency.setValueAtTime(800, c.currentTime);
-      o.frequency.exponentialRampToValueAtTime(200, c.currentTime + 0.08);
+      o.frequency.setValueAtTime(900, c.currentTime);
+      o.frequency.exponentialRampToValueAtTime(150, c.currentTime + 0.09);
       g.gain.setValueAtTime(0.2, c.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.08);
+      g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.09);
       o.connect(g).connect(c.destination);
-      o.start(); o.stop(c.currentTime + 0.08);
+      o.start(); o.stop(c.currentTime + 0.09);
+    } else if (type === 'sparkle') { // キラキラ✨
+      [1046.50, 1318.51, 1567.98].forEach((freq, i) => {
+        const o = c.createOscillator(), g = c.createGain();
+        o.type = 'sine';
+        o.frequency.value = freq;
+        g.gain.setValueAtTime(0.08, c.currentTime + i * 0.05);
+        g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + i * 0.05 + 0.2);
+        o.connect(g).connect(c.destination);
+        o.start(c.currentTime + i * 0.05);
+        o.stop(c.currentTime + i * 0.05 + 0.2);
+      });
     }
   } catch(e){}
+}
+
+// 🎊 紙吹雪演出
+function launchConfetti() {
+  const container = $('confettiContainer');
+  const colors = ['#ff5b5b', '#4aa8ff', '#ffd84a', '#5dcc78', '#a875e8', '#ff8ac5'];
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    p.style.animationDelay = (Math.random() * 0.4) + 's';
+    container.appendChild(p);
+    setTimeout(() => p.remove(), 2600);
+  }
 }
 
 function feedback(id,text){
@@ -214,14 +275,13 @@ function show(id){
 function goHome(){clearInterval(timer);timer=null;show('home')}
 function shuffle(a){return a.sort(()=>Math.random()-.5)}
 
+/* 色タッチ */
 const colors=[
   ['あか','#ff5b5b','🔴'],['あお','#4aa8ff','🔵'],['きいろ','#ffd84a','🟡'],['みどり','#5dcc78','🟢'],
   ['むらさき','#a875e8','🟣'],['ピンク','#ff8ac5','🩷']
 ];
 let colorAnswer;
-function startColor(){
-  show('color');nextColor();
-}
+function startColor(){show('color');nextColor();}
 function nextColor(){
   const selected=shuffle([...colors]).slice(0,4);colorAnswer=selected[Math.floor(Math.random()*4)];
   $('colorPrompt').textContent=`${colorAnswer[0]}を タッチしてね！ ${colorAnswer[2]}`;
@@ -230,7 +290,7 @@ function nextColor(){
     const b=document.createElement('button');b.className='colorChoice';b.style.background=c[1];b.setAttribute('aria-label',c[0]);
     b.onclick=()=>{
       if(c===colorAnswer){
-        playSound('correct');addStar();feedback('colorFeedback','⭕');speak('せいかい！');setTimeout(nextColor,800);
+        playSound('correct');launchConfetti();addStar();feedback('colorFeedback','⭕');speak('せいかい！');setTimeout(nextColor,900);
       }else{
         playSound('wrong');feedback('colorFeedback','もういっかい！');speak('もういっかい');
       }
@@ -240,6 +300,7 @@ function nextColor(){
   speak(colorAnswer[0]+'をタッチしてね');
 }
 
+/* どうぶつタッチ */
 const animals=[['いぬ','🐶','わんわん！'],['ねこ','🐱','にゃー！'],['うさぎ','🐰','ぴょん！'],['くま','🐻','がおー！'],['ぞう','🐘','ぱおーん！'],['ライオン','🦁','がおー！'],['ぶた','🐷','ぶー！'],['ひよこ','🐥','ぴよぴよ！']];
 let animalAnswer;
 function startAnimal(){show('animal');nextAnimal()}
@@ -251,7 +312,7 @@ function nextAnimal(){
     const b=document.createElement('button');b.className='animalChoice';b.textContent=a[1];b.setAttribute('aria-label',a[0]);
     b.onclick=()=>{
       if(a===animalAnswer){
-        playSound('correct');addStar();feedback('animalFeedback','🎉');speak('せいかい！'+a[2]);setTimeout(nextAnimal,900);
+        playSound('correct');launchConfetti();addStar();feedback('animalFeedback','🎉');speak('せいかい！'+a[2]);setTimeout(nextAnimal,1000);
       }else{
         playSound('wrong');feedback('animalFeedback','😊');speak('もういっかい');
       }
@@ -261,6 +322,51 @@ function nextAnimal(){
   speak(animalAnswer[0]+'はどこかな？');
 }
 
+/* 🆕 すうじタッチ */
+const numbers=[['いち','1'],['に','2'],['さん','3'],['よん','4'],['ご','5']];
+let numberAnswer;
+function startNumber(){show('numberGame');nextNumber()}
+function nextNumber(){
+  const selected=shuffle([...numbers]).slice(0,4);numberAnswer=selected[Math.floor(Math.random()*4)];
+  $('numberPrompt').textContent=`「${numberAnswer[1]}」を タッチしてね！`;
+  $('numberChoices').innerHTML='';
+  shuffle(selected).forEach(n=>{
+    const b=document.createElement('button');b.className='animalChoice';b.textContent=n[1];b.style.fontSize='50px';b.style.fontWeight='900';
+    b.onclick=()=>{
+      if(n===numberAnswer){
+        playSound('correct');launchConfetti();addStar();feedback('numberFeedback','⭕');speak('せいかい！'+n[0]);setTimeout(nextNumber,900);
+      }else{
+        playSound('wrong');feedback('numberFeedback','もういっかい！');speak('もういっかい');
+      }
+    };
+    $('numberChoices').appendChild(b);
+  });
+  speak(numberAnswer[1]+'をタッチしてね');
+}
+
+/* 🆕 かたちタッチ */
+const shapes=[['まる','🔴'],['さんかく','🔺'],['しかく','🟦'],['ほし','⭐'],['ハート','🩷']];
+let shapeAnswer;
+function startShape(){show('shapeGame');nextShape()}
+function nextShape(){
+  const selected=shuffle([...shapes]).slice(0,4);shapeAnswer=selected[Math.floor(Math.random()*4)];
+  $('shapePrompt').textContent=`${shapeAnswer[0]}を タッチしてね！`;
+  $('shapeChoices').innerHTML='';
+  shuffle(selected).forEach(s=>{
+    const b=document.createElement('button');b.className='animalChoice';b.textContent=s[1];
+    b.onclick=()=>{
+      if(s===shapeAnswer){
+        playSound('correct');launchConfetti();addStar();feedback('shapeFeedback','⭕');speak('せいかい！'+s[0]);setTimeout(nextShape,900);
+      }else{
+        playSound('wrong');feedback('shapeFeedback','もういっかい！');speak('もういっかい');
+      }
+    };
+    $('shapeChoices').appendChild(b);
+  });
+  speak(shapeAnswer[0]+'をタッチしてね');
+}
+
+/* ふうせん */
 let balloonTimer;
 function startBalloons(){
   show('balloons');$('balloonArea').querySelectorAll('.balloon').forEach(x=>x.remove());$('balloonScore').textContent='0';
@@ -268,7 +374,7 @@ function startBalloons(){
   for(let i=0;i<4;i++)setTimeout(makeBalloon,i*250);
 }
 function makeBalloon(){
-  const area=$('balloonArea');if(!area.classList.contains('active') && $('balloons').classList.contains('active')===false)return;
+  const area=$('balloonArea');if(!$('balloons').classList.contains('active'))return;
   const b=document.createElement('div');b.className='balloon';
   const cols=['#ff5b7d','#54b9ff','#ffd84a','#65d47c','#a875e8','#ff9d4d'];
   b.style.background=cols[Math.floor(Math.random()*cols.length)];
@@ -277,6 +383,7 @@ function makeBalloon(){
   b.ontouchstart=e=>{e.preventDefault()};area.appendChild(b);setTimeout(()=>b.remove(),7500);
 }
 
+/* ほしあつめ */
 let starTimer;
 function startStars(){
   show('starsGame');$('starArea').innerHTML='';clearInterval(starTimer);placeStar();starTimer=setInterval(placeStar,1200);
@@ -285,12 +392,13 @@ function placeStar(){
   if(!$('starsGame').classList.contains('active'))return;
   const s=document.createElement('div');s.className='tapTarget';s.textContent=['⭐','🌟','💫'][Math.floor(Math.random()*3)];
   s.style.left=(5+Math.random()*85)+'%';s.style.top=(8+Math.random()*70)+'%';
-  s.onclick=()=>{playSound('correct');addStar();s.remove()};$('starArea').appendChild(s);setTimeout(()=>s.remove(),3000);
+  s.onclick=()=>{playSound('sparkle');addStar();s.remove()};$('starArea').appendChild(s);setTimeout(()=>s.remove(),3000);
 }
 
+/* くるま */
 function startCars(){
   show('cars');const c=$('car');c.textContent=['🚗','🚙','🚌','🚕','🚓'][Math.floor(Math.random()*5)];
-  c.onclick=()=>{playSound('correct');addStar();feedback('carAreaFeedback','🎉');speak('ブーン！');c.style.animation='none';void c.offsetWidth;c.style.animation='drive 3s linear infinite'};
+  c.onclick=()=>{playSound('correct');launchConfetti();addStar();feedback('carAreaFeedback','🎉');speak('ブーン！');c.style.animation='none';void c.offsetWidth;c.style.animation='drive 3s linear infinite'};
   if(!$('carAreaFeedback')){const f=document.createElement('div');f.id='carAreaFeedback';f.className='feedback';$('carArea').appendChild(f)}
   c.style.animation='none';void c.offsetWidth;c.style.animation='drive 5s linear infinite';
 }
