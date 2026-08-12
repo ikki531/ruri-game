@@ -28,23 +28,25 @@
   h1{margin:0;font-size:clamp(24px,6vw,36px);cursor:pointer}
   .subtitle{font-size:16px;font-weight:700}
   .games{width:min(760px,100%);display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-  .gameBtn{background:#fff;border-radius:22px;padding:14px 8px;min-height:120px;box-shadow:0 6px 0 #eadfca;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-weight:900}
+  .gameBtn{background:#fff;border-radius:22px;padding:14px 8px;min-height:110px;box-shadow:0 6px 0 #eadfca;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-weight:900}
   .gameBtn:active{transform:translateY(4px);box-shadow:0 2px 0 #eadfca}
-  .gameIcon{font-size:45px}.gameName{font-size:18px}.gameDesc{font-size:12px;color:#78675b}
+  .gameIcon{font-size:40px}.gameName{font-size:16px}.gameDesc{font-size:11px;color:#78675b}
   
   .back{position:relative;align-self:flex-start;margin-bottom:10px;background:#fff;border-radius:999px;padding:8px 16px;font-weight:900;z-index:20;box-shadow:0 3px 8px #0002}
   .gameTitle{text-align:center;font-size:clamp(22px,5vw,30px);font-weight:900;margin:0 0 8px}
   .prompt{text-align:center;font-size:clamp(20px,4.5vw,26px);font-weight:900;margin:0 0 12px}
   
   .bigArea{flex:1;min-height:300px;position:relative;overflow:hidden;border-radius:28px;background:#dff6ff;box-shadow:inset 0 0 0 4px #fff}
-  .feedback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font-size:clamp(50px,16vw,100px);font-weight:900;z-index:50;opacity:0}
+  
+  /* 📱 iPhone画面崩れ対策：フィードバック文字サイズを最適化 */
+  .feedback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font-size:clamp(28px,8vw,60px);font-weight:900;z-index:50;opacity:0;white-space:nowrap;background:rgba(255,255,255,0.7);border-radius:28px;margin:auto;max-width:90%;max-height:100px;padding:10px 20px;box-shadow:0 10px 25px rgba(0,0,0,0.1)}
   .feedback.show{animation:feedback .65s ease}
-  @keyframes feedback{0%{opacity:0;transform:scale(.5)}35%{opacity:1;transform:scale(1.15)}100%{opacity:0;transform:scale(1)}}
+  @keyframes feedback{0%{opacity:0;transform:scale(.5)}35%{opacity:1;transform:scale(1.05)}100%{opacity:0;transform:scale(1)}}
   
   .colorChoices,.choiceGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:min(650px,100%);margin:auto}
   .colorChoice{min-height:120px;border-radius:24px;box-shadow:0 6px 0 #0002}
   .colorChoice:active{transform:translateY(4px);box-shadow:0 2px 0 #0002}
-  .animalChoice{background:#fff;border-radius:24px;min-height:130px;box-shadow:0 6px 0 #eadfca;font-size:65px}
+  .animalChoice{background:#fff;border-radius:24px;min-height:120px;box-shadow:0 6px 0 #eadfca;font-size:60px}
   .animalChoice:active{transform:translateY(4px);box-shadow:0 2px 0 #eadfca}
   
   .balloon{position:absolute;border-radius:50% 50% 46% 46%;width:76px;height:92px;box-shadow:inset -10px -12px 15px #0002, inset 8px 8px 10px #fff8;animation:floatUp linear forwards}
@@ -61,11 +63,23 @@
   .tapTarget{position:absolute;font-size:72px;user-select:none}
   .tapTarget:active{transform:scale(.85)}
 
+  /* 📖 えほんスタイル */
+  .bookCard{flex:1;background:#fff;border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;box-shadow:0 6px 0 #eadfca;cursor:pointer;text-align:center;gap:16px}
+  .bookIcon{font-size:clamp(80px,25vw,130px)}
+  .bookText{font-size:clamp(20px,5vw,28px);font-weight:900}
+
+  /* 🎨 おえかきスタイル */
+  .drawArea{flex:1;background:#fff;border-radius:24px;position:relative;touch-action:none;box-shadow:inset 0 0 0 4px #eadfca}
+  canvas{width:100%;height:100%;border-radius:24px;display:block}
+  .drawTools{display:flex;gap:10px;justify-content:center;margin-top:10px}
+  .colorDot{width:36px;height:36px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 5px #0002;cursor:pointer}
+  .colorDot.active{transform:scale(1.2);border-color:#4b3b32}
+
   .confetti-container{position:fixed;inset:0;pointer-events:none;z-index:999;overflow:hidden}
   .confetti{position:absolute;width:12px;height:12px;top:-20px;animation:confettiFall 2.5s ease-out forwards}
   @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
 
-  @media(min-width:700px){.games{grid-template-columns:repeat(4,1fr)}.colorChoices,.choiceGrid{grid-template-columns:repeat(4,1fr)}}
+  @media(min-width:700px){.games{grid-template-columns:repeat(3,1fr)}.colorChoices,.choiceGrid{grid-template-columns:repeat(4,1fr)}}
 </style>
 </head>
 <body>
@@ -90,6 +104,8 @@
     <button class="gameBtn" onclick="startBalloons()"><div class="gameIcon">🎈</div><div class="gameName">ふうせん</div><div class="gameDesc">タッチで パーン</div></button>
     <button class="gameBtn" onclick="startStars()"><div class="gameIcon">⭐</div><div class="gameName">ほしあつめ</div><div class="gameDesc">ほしを タッチ</div></button>
     <button class="gameBtn" onclick="startCars()"><div class="gameIcon">🚗</div><div class="gameName">くるま</div><div class="gameDesc">くるま タッチ</div></button>
+    <button class="gameBtn" onclick="startBook()"><div class="gameIcon">📖</div><div class="gameName">えほん</div><div class="gameDesc">おはなし タッチ</div></button>
+    <button class="gameBtn" onclick="startDraw()"><div class="gameIcon">🎨</div><div class="gameName">おえかき</div><div class="gameDesc">じゆうに かこう</div></button>
   </div>
 </section>
 
@@ -148,6 +164,35 @@
   <div class="car" id="car">🚙</div>
 </div>
 </section>
+
+<!-- 📖 えほん画面 -->
+<section id="book" class="screen">
+<button class="back" onclick="goHome()">← もどる</button>
+<div class="gameTitle">📖 えほん</div>
+<div class="prompt">画面をタッチして ページをめくってね！</div>
+<div class="bookCard" onclick="nextBookPage()">
+  <div class="bookIcon" id="bookIcon">🐱</div>
+  <div class="bookText" id="bookText">こねこが います</div>
+</div>
+</section>
+
+<!-- 🎨 おえかき画面 -->
+<section id="draw" class="screen">
+<button class="back" onclick="goHome()">← もどる</button>
+<div class="gameTitle">🎨 じゆうにおえかき</div>
+<div class="drawArea" id="drawContainer">
+  <canvas id="drawCanvas"></canvas>
+</div>
+<div class="drawTools">
+  <div class="colorDot active" style="background:#ff5b5b;" onclick="setDrawColor('#ff5b5b', this)"></div>
+  <div class="colorDot" style="background:#4aa8ff;" onclick="setDrawColor('#4aa8ff', this)"></div>
+  <div class="colorDot" style="background:#ffd84a;" onclick="setDrawColor('#ffd84a', this)"></div>
+  <div class="colorDot" style="background:#5dcc78;" onclick="setDrawColor('#5dcc78', this)"></div>
+  <div class="colorDot" style="background:#4b3b32;" onclick="setDrawColor('#4b3b32', this)"></div>
+  <button class="back" style="margin:0;padding:6px 14px;" onclick="clearCanvas()">🗑️ けす</button>
+</div>
+</section>
+
 </main>
 </div>
 
@@ -174,12 +219,9 @@ function initAudioContext() {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (AudioContextClass) {
       audioCtx = new AudioContextClass();
-      
-      // Web Audio APIでBGMの音量ノード(GainNode)を作成して接続
       const source = audioCtx.createMediaElementSource(bgmAudio);
       bgmGainNode = audioCtx.createGain();
-      bgmGainNode.gain.value = BGM_VOLUME; // iOSでも強制的に0.05に減衰
-      
+      bgmGainNode.gain.value = BGM_VOLUME;
       source.connect(bgmGainNode);
       bgmGainNode.connect(audioCtx.destination);
     }
@@ -261,7 +303,6 @@ function stopWelcomeLoop() {
   }
 }
 
-// iPhone対策: 初回タッチ時にAudioContext起動・BGMと歓迎ボイスを開始
 window.addEventListener('click', function initAudio() {
   startBGM();
   if ($('home').classList.contains('active') && !welcomeLoopTimer) {
@@ -348,7 +389,7 @@ function nextColor(){
     const b=document.createElement('button'); b.className='colorChoice'; b.style.background=c[1];
     b.onclick=()=>{
       if(c===colorAnswer){
-        playSound('correct'); launchConfetti(); addStar(); feedback('colorFeedback','⭕');
+        playSound('correct'); launchConfetti(); addStar(); feedback('colorFeedback','⭕ せいかい！');
         playVoice('seikai.wav', 'せいかい！');
         setTimeout(nextColor, 1200);
       }else{
@@ -378,9 +419,9 @@ function nextAnimal(){
     const b=document.createElement('button');b.className='animalChoice';b.textContent=a[1];
     b.onclick=()=>{
       if(a===animalAnswer){
-        playSound('correct');launchConfetti();addStar();feedback('animalFeedback','🎉');playVoice('seikai.wav', 'せいかい！');setTimeout(nextAnimal,1200);
+        playSound('correct');launchConfetti();addStar();feedback('animalFeedback','🎉 せいかい！');playVoice('seikai.wav', 'せいかい！');setTimeout(nextAnimal,1200);
       }else{
-        playSound('wrong');feedback('animalFeedback','😊');playVoice('mouikkai.wav', 'もういっかい');
+        playSound('wrong');feedback('animalFeedback','もういっかい！');playVoice('mouikkai.wav', 'もういっかい');
       }
     };
     $('animalChoices').appendChild(b);
@@ -403,7 +444,7 @@ function nextNumber(){
     const b=document.createElement('button');b.className='animalChoice';b.textContent=n[1];b.style.fontSize='50px';b.style.fontWeight='900';
     b.onclick=()=>{
       if(n===numberAnswer){
-        playSound('correct');launchConfetti();addStar();feedback('numberFeedback','⭕');playVoice('seikai.wav', 'せいかい！');setTimeout(nextNumber,1200);
+        playSound('correct');launchConfetti();addStar();feedback('numberFeedback','⭕ せいかい！');playVoice('seikai.wav', 'せいかい！');setTimeout(nextNumber,1200);
       }else{
         playSound('wrong');feedback('numberFeedback','もういっかい！');playVoice('mouikkai.wav', 'もういっかい');
       }
@@ -428,7 +469,7 @@ function nextShape(){
     const b=document.createElement('button');b.className='animalChoice';b.textContent=s[1];
     b.onclick=()=>{
       if(s===shapeAnswer){
-        playSound('correct');launchConfetti();addStar();feedback('shapeFeedback','⭕');playVoice('seikai.wav', 'せいかい！');setTimeout(nextShape,1200);
+        playSound('correct');launchConfetti();addStar();feedback('shapeFeedback','⭕ せいかい！');playVoice('seikai.wav', 'せいかい！');setTimeout(nextShape,1200);
       }else{
         playSound('wrong');feedback('shapeFeedback','もういっかい！');playVoice('mouikkai.wav', 'もういっかい');
       }
@@ -470,9 +511,118 @@ function placeStar(){
 /* くるま */
 function startCars(){
   show('cars');const c=$('car');c.textContent=['🚗','🚙','🚌','🚕','🚓'][Math.floor(Math.random()*5)];
-  c.onclick=()=>{playSound('correct');launchConfetti();addStar();feedback('carAreaFeedback','🎉');playVoice('seikai.wav', 'ブーン！');c.style.animation='none';void c.offsetWidth;c.style.animation='drive 3s linear infinite'};
+  c.onclick=()=>{playSound('correct');launchConfetti();addStar();feedback('carAreaFeedback','🎉 ブーン！');playVoice('seikai.wav', 'ブーン！');c.style.animation='none';void c.offsetWidth;c.style.animation='drive 3s linear infinite'};
   if(!$('carAreaFeedback')){const f=document.createElement('div');f.id='carAreaFeedback';f.className='feedback';$('carArea').appendChild(f)}
   c.style.animation='none';void c.offsetWidth;c.style.animation='drive 5s linear infinite';
+}
+
+/* 📖 えほん機能 */
+const bookPages = [
+  {icon:'🐱', text:'こねこが さんぽに でかけるよ'},
+  {icon:'🌸', text:'きれいな おはなが さいているね'},
+  {icon:'🦋', text:'ちょうちょうが ひらひら とんできたよ'},
+  {icon:'🐥', text:'おともだちの ひよこさんに あったよ'},
+  {icon:'🎂', text:'みんなで たのしく ケーキを たべたよ！'}
+];
+let currentBookIndex = 0;
+
+function startBook() {
+  show('book');
+  currentBookIndex = 0;
+  updateBookPage();
+}
+
+function updateBookPage() {
+  const page = bookPages[currentBookIndex];
+  $('bookIcon').textContent = page.icon;
+  $('bookText').textContent = page.text;
+  playVoice('', page.text);
+}
+
+function nextBookPage() {
+  playSound('sparkle');
+  currentBookIndex = (currentBookIndex + 1) % bookPages.length;
+  if(currentBookIndex === 0) {
+    launchConfetti();
+    addStar();
+  }
+  updateBookPage();
+}
+
+/* 🎨 おえかき機能 */
+let canvas, ctx, drawing = false;
+let drawColor = '#ff5b5b';
+
+function startDraw() {
+  show('draw');
+  setTimeout(initCanvas, 100);
+}
+
+function initCanvas() {
+  const container = $('drawContainer');
+  canvas = $('drawCanvas');
+  canvas.width = container.clientWidth;
+  canvas.height = container.clientHeight;
+  ctx = canvas.getContext('2d');
+  ctx.lineWidth = 10;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.strokeStyle = drawColor;
+
+  canvas.addEventListener('mousedown', startDrawing);
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mouseup', stopDrawing);
+  canvas.addEventListener('touchstart', handleTouchStart, {passive: false});
+  canvas.addEventListener('touchmove', handleTouchMove, {passive: false});
+  canvas.addEventListener('touchend', stopDrawing);
+}
+
+function startDrawing(e) {
+  drawing = true;
+  ctx.beginPath();
+  const rect = canvas.getBoundingClientRect();
+  ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+}
+
+function draw(e) {
+  if (!drawing) return;
+  const rect = canvas.getBoundingClientRect();
+  ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+  ctx.stroke();
+}
+
+function stopDrawing() {
+  if (drawing) {
+    drawing = false;
+    addStar();
+  }
+}
+
+function handleTouchStart(e) {
+  e.preventDefault();
+  const touch = e.touches[0];
+  startDrawing({ clientX: touch.clientX, clientY: touch.clientY });
+}
+
+function handleTouchMove(e) {
+  e.preventDefault();
+  const touch = e.touches[0];
+  draw({ clientX: touch.clientX, clientY: touch.clientY });
+}
+
+function setDrawColor(color, el) {
+  drawColor = color;
+  if (ctx) ctx.strokeStyle = color;
+  document.querySelectorAll('.colorDot').forEach(d => d.classList.remove('active'));
+  el.classList.add('active');
+  playSound('pop');
+}
+
+function clearCanvas() {
+  if (ctx && canvas) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    playSound('sparkle');
+  }
 }
 </script>
 </body>
