@@ -38,7 +38,7 @@
   
   .bigArea{flex:1;min-height:300px;position:relative;overflow:hidden;border-radius:28px;background:#dff6ff;box-shadow:inset 0 0 0 4px #fff}
   
-  /* 📱 iPhone画面崩れ対策：フィードバック文字サイズを最適化 */
+  /* 📱 iPhone画面崩れ対策 */
   .feedback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font-size:clamp(28px,8vw,60px);font-weight:900;z-index:50;opacity:0;white-space:nowrap;background:rgba(255,255,255,0.7);border-radius:28px;margin:auto;max-width:90%;max-height:100px;padding:10px 20px;box-shadow:0 10px 25px rgba(0,0,0,0.1)}
   .feedback.show{animation:feedback .65s ease}
   @keyframes feedback{0%{opacity:0;transform:scale(.5)}35%{opacity:1;transform:scale(1.05)}100%{opacity:0;transform:scale(1)}}
@@ -211,7 +211,7 @@ let bgmGainNode = null;
 let bgmAudio = new Audio('bgm.mp3');
 bgmAudio.loop = true;
 
-const BGM_VOLUME = 0.05; // 🎯 希望の音量（0.05）
+const BGM_VOLUME = 0.05;
 let isBgmEnabled = true;
 
 function initAudioContext() {
@@ -516,7 +516,7 @@ function startCars(){
   c.style.animation='none';void c.offsetWidth;c.style.animation='drive 5s linear infinite';
 }
 
-/* 📖 えほん機能 */
+/* 📖 えhon機能 */
 const bookPages = [
   {icon:'🐱', text:'こねこが さんぽに でかけるよ', voice:'book1.wav'},
   {icon:'🌸', text:'きれいな おはなが さいているね', voice:'book2.wav'},
@@ -536,7 +536,8 @@ function updateBookPage() {
   const page = bookPages[currentBookIndex];
   $('bookIcon').textContent = page.icon;
   $('bookText').textContent = page.text;
-  playVoice('', page.text);
+  // 🎯 修正箇所：voiceパラメータを正しく渡すように変更
+  playVoice(page.voice, page.text);
 }
 
 function nextBookPage() {
@@ -555,6 +556,7 @@ let drawColor = '#ff5b5b';
 
 function startDraw() {
   show('draw');
+  playVoice('oekaki.wav', 'じゆうに かいてね');
   setTimeout(initCanvas, 100);
 }
 
@@ -622,6 +624,7 @@ function clearCanvas() {
   if (ctx && canvas) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     playSound('sparkle');
+    playVoice('kirei.wav', 'きれいになっちゃった');
   }
 }
 </script>
