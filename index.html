@@ -160,19 +160,44 @@ $('stars').textContent=stars;
 let timer=null;
 let welcomeLoopTimer=null;
 
-// 🎵 BGM設定（音量を0.125に変更＝前回の半分）
-const bgmAudio = new Audio('bgm.mp3');
+// 🎵 共通オーディオコンテキスト（iOS音量無視対策）
+let audioCtx = null;
+let bgmGainNode = null;
+let bgmAudio = new Audio('bgm.mp3');
 bgmAudio.loop = true;
-bgmAudio.volume = 0.05; 
+
+const BGM_VOLUME = 0.05; // 🎯 希望の音量（0.05）
 let isBgmEnabled = true;
 
+function initAudioContext() {
+  if (!audioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) {
+      audioCtx = new AudioContextClass();
+      
+      // Web Audio APIでBGMの音量ノード(GainNode)を作成して接続
+      const source = audioCtx.createMediaElementSource(bgmAudio);
+      bgmGainNode = audioCtx.createGain();
+      bgmGainNode.gain.value = BGM_VOLUME; // iOSでも強制的に0.05に減衰
+      
+      source.connect(bgmGainNode);
+      bgmGainNode.connect(audioCtx.destination);
+    }
+  }
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+}
+
 function startBGM() {
+  initAudioContext();
   if (isBgmEnabled) {
     bgmAudio.play().catch(() => {});
   }
 }
 
 function toggleBGM() {
+  initAudioContext();
   isBgmEnabled = !isBgmEnabled;
   const btn = $('bgmToggleBtn');
   if (isBgmEnabled) {
@@ -236,7 +261,7 @@ function stopWelcomeLoop() {
   }
 }
 
-// iPhone対策: 初回タッチ時にBGMと歓迎ボイスを開始
+// iPhone対策: 初回タッチ時にAudioContext起動・BGMと歓迎ボイスを開始
 window.addEventListener('click', function initAudio() {
   startBGM();
   if ($('home').classList.contains('active') && !welcomeLoopTimer) {
@@ -247,8 +272,9 @@ window.addEventListener('click', function initAudio() {
 // 🎵 効果音
 function playSound(type) {
   try {
-    const C = window.AudioContext || window.webkitAudioContext; if(!C) return;
-    const c = new C();
+    initAudioContext();
+    if(!audioCtx) return;
+    const c = audioCtx;
     if(type==='correct'){
       [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
         const o=c.createOscillator(), g=c.createGain();
