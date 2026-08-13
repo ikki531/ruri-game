@@ -45,7 +45,7 @@
   @keyframes feedback{0%{opacity:0;transform:scale(.5)}35%{opacity:1;transform:scale(1.05)}100%{opacity:0;transform:scale(1)}}
   
   .colorChoices,.choiceGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:min(650px,100%);margin:auto}
-  .colorChoice{min-height:120px;border-radius:24px;box-shadow:0 6px 0 #0002}
+  .colorChoice{min-height:120px;border-radius:24px;box-shadow:0 6px 0 #0002;border:3px solid #fff}
   .colorChoice:active{transform:translateY(4px);box-shadow:0 2px 0 #0002}
   .animalChoice{background:#fff;border-radius:24px;min-height:120px;box-shadow:0 6px 0 #eadfca;font-size:60px}
   .animalChoice:active{transform:translateY(4px);box-shadow:0 2px 0 #eadfca}
@@ -89,7 +89,7 @@
   <div class="title" onclick="playWelcomeVoice()">🌈 るりちゃんのゲームランド</div>
   <div class="header-right">
     <button class="bgm-btn" id="bgmToggleBtn" onclick="toggleBGM()">🎵 ON</button>
-    <div class="version-tag">v1.1</div>
+    <div class="version-tag">v1.2</div>
     <div class="stars">⭐ <span id="stars">0</span></div>
   </div>
 </header>
@@ -207,6 +207,9 @@ $('stars').textContent=stars;
 let timer=null;
 let welcomeLoopTimer=null;
 
+// 🎵 音声重複防止用グローバル変数
+let currentVoiceAudio = null;
+
 // 🎵 共通オーディオコンテキスト（iOS音量無視対策）
 let audioCtx = null;
 let bgmGainNode = null;
@@ -257,18 +260,30 @@ function toggleBGM() {
 
 function addStar(n=1){ stars+=n; localStorage.setItem('ruriStars',stars); $('stars').textContent=stars; }
 
-// 🎵 WAV音声再生関数
+// 🎵 WAV音声再生関数（絶対重ならないように修正）
 function playVoice(filename, fallbackText) {
+  // 現在再生中の音声があればストップ
+  if (currentVoiceAudio) {
+    currentVoiceAudio.pause();
+    currentVoiceAudio.currentTime = 0;
+    currentVoiceAudio = null;
+  }
+  if ('speechSynthesis' in window) {
+    speechSynthesis.cancel();
+  }
+
   if(!filename) {
     if('speechSynthesis' in window) {
-      speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(fallbackText);
       u.lang = 'ja-JP'; u.rate = 1.15; u.pitch = 1.4;
       speechSynthesis.speak(u);
     }
     return;
   }
+
   const audio = new Audio(filename);
+  currentVoiceAudio = audio;
+
   audio.play().catch(() => {
     if('speechSynthesis' in window) {
       speechSynthesis.cancel();
@@ -376,10 +391,18 @@ function shuffle(a){ return a.sort(()=>Math.random()-.5) }
 
 startWelcomeLoop();
 
-/* 色タッチ */
+/* 色タッチ (10種類に拡充) */
 const colors=[
-  ['あか','#ff5b5b','🔴','aka.wav'],['あお','#4aa8ff','🔵','ao.wav'],
-  ['きいろ','#ffd84a','🟡','kiiro.wav'],['みどり','#5dcc78','🟢','midori.wav']
+  ['あか','#ff5b5b','🔴','aka.wav'],
+  ['あお','#4aa8ff','🔵','ao.wav'],
+  ['きいろ','#ffd84a','🟡','kiiro.wav'],
+  ['みどり','#5dcc78','🟢','midori.wav'],
+  ['むらさき','#a875e8','🟣','murasaki.wav'],
+  ['オレンジ','#ff9d4d','🟠','orange.wav'],
+  ['ピンク','#ff9ebb','🩷','pink.wav'],
+  ['しろ','#ffffff','⚪','shiro.wav'],
+  ['くろ','#333333','🖤','kuro.wav'],
+  ['ちゃいろ','#a52a2a','🟤','chairo.wav']
 ];
 let colorAnswer;
 function startColor(){ show('color'); nextColor(); }
@@ -404,12 +427,23 @@ function nextColor(){
   playVoice(colorAnswer[3], colorAnswer[0]+'をタッチしてね');
 }
 
-/* どうぶつタッチ */
+/* どうぶつタッチ (15種類に拡充) */
 const animals=[
-  ['いぬ','🐶','わんわん！','inu.wav'],['ねこ','🐱','にゃー！','neko.wav'],
-  ['うさぎ','🐰','ぴょん！','usagi.wav'],['くま','🐻','がおー！','kuma.wav'],
-  ['ぞう','🐘','ぱおーん！','zou.wav'],['ライオン','🦁','がおー！','lion.wav'],
-  ['ぶた','🐷','ぶー！','buta.wav'],['ひよこ','🐥','ぴよぴよ！','hiyoko.wav']
+  ['いぬ','🐶','わんわん！','inu.wav'],
+  ['ねこ','🐱','にゃー！','neko.wav'],
+  ['うさぎ','🐰','ぴょん！','usagi.wav'],
+  ['くま','🐻','がおー！','kuma.wav'],
+  ['ぞう','🐘','ぱおーん！','zou.wav'],
+  ['ライオン','🦁','がおー！','lion.wav'],
+  ['ぶた','🐷','ぶー！','buta.wav'],
+  ['ひよこ','🐥','ぴよぴよ！','hiyoko.wav'],
+  ['さる','🐵','うっきー！','saru.wav'],
+  ['パンダ','🐼','ごろごろ！','panda.wav'],
+  ['ペンギン','🐧','ぺたぺた！','penguin.wav'],
+  ['かえる','🐸','けろけろ！','kaeru.wav'],
+  ['きりん','🦒','すくすく！','kirin.wav'],
+  ['うま','🐴','ひひーん！','uma.wav'],
+  ['とら','🐯','がおー！','tora.wav']
 ];
 let animalAnswer;
 function startAnimal(){show('animal');nextAnimal()}
@@ -431,10 +465,18 @@ function nextAnimal(){
   playVoice(animalAnswer[3], animalAnswer[0]+'はどこかな？');
 }
 
-/* すうじタッチ */
+/* すうじタッチ (1～10に拡充) */
 const numbers=[
-  ['いち','1','num1.wav'],['に','2','num2.wav'],
-  ['さん','3','num3.wav'],['よん','4','num4.wav'],['ご','5','num5.wav']
+  ['いち','1','num1.wav'],
+  ['に','2','num2.wav'],
+  ['さん','3','num3.wav'],
+  ['よん','4','num4.wav'],
+  ['ご','5','num5.wav'],
+  ['ろく','6','num6.wav'],
+  ['なな','7','num7.wav'],
+  ['はち','8','num8.wav'],
+  ['きゅう','9','num9.wav'],
+  ['じゅう','10','num10.wav']
 ];
 let numberAnswer;
 function startNumber(){show('numberGame');nextNumber()}
@@ -456,10 +498,18 @@ function nextNumber(){
   playVoice(numberAnswer[2], numberAnswer[1]+'をタッチしてね');
 }
 
-/* かたちタッチ */
+/* かたちタッチ (10種類に拡充) */
 const shapes=[
-  ['まる','🔴','maru.wav'],['さんかく','🔺','sankaku.wav'],
-  ['しかく','🟦','sikaku.wav'],['ほし','⭐','hoshi.wav'],['ハート','🩷','heart.wav']
+  ['まる','🔴','maru.wav'],
+  ['さんかく','🔺','sankaku.wav'],
+  ['しかく','🟦','sikaku.wav'],
+  ['ほし','⭐','hoshi.wav'],
+  ['ハート','🩷','heart.wav'],
+  ['ダイヤ','🔷','dia.wav'],
+  ['おつきさま','🌙','tsuki.wav'],
+  ['おはな','🌸','hana.wav'],
+  ['おにぎり','🍙','onigiri.wav'],
+  ['りんご','🍎','ringo.wav']
 ];
 let shapeAnswer;
 function startShape(){show('shapeGame');nextShape()}
