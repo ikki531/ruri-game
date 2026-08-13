@@ -37,17 +37,25 @@
   .gameTitle{text-align:center;font-size:clamp(22px,5vw,30px);font-weight:900;margin:0 0 8px}
   .prompt{text-align:center;font-size:clamp(20px,4.5vw,26px);font-weight:900;margin:0 0 12px}
   
+  /* 難易度選択モーダル */
+  .diff-select{display:flex;flex-direction:column;gap:12px;width:min(400px,100%);margin:auto}
+  .diff-btn{padding:16px;border-radius:20px;font-size:20px;font-weight:900;background:#fff;box-shadow:0 5px 0 #eadfca;cursor:pointer;text-align:center}
+  .diff-btn.easy{border:3px solid #65d47c;color:#2e7d32}
+  .diff-btn.normal{border:3px solid #ff9d4d;color:#e65100}
+  .diff-btn.hard{border:3px solid #ff5b7d;color:#c2185b}
+  .diff-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #eadfca}
+
   .bigArea{flex:1;min-height:300px;position:relative;overflow:hidden;border-radius:28px;background:#dff6ff;box-shadow:inset 0 0 0 4px #fff}
   
-  /* 📱 iPhone画面崩れ対策 */
   .feedback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;font-size:clamp(28px,8vw,60px);font-weight:900;z-index:50;opacity:0;white-space:nowrap;background:rgba(255,255,255,0.7);border-radius:28px;margin:auto;max-width:90%;max-height:100px;padding:10px 20px;box-shadow:0 10px 25px rgba(0,0,0,0.1)}
   .feedback.show{animation:feedback .65s ease}
   @keyframes feedback{0%{opacity:0;transform:scale(.5)}35%{opacity:1;transform:scale(1.05)}100%{opacity:0;transform:scale(1)}}
   
-  .colorChoices,.choiceGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:min(650px,100%);margin:auto}
-  .colorChoice{min-height:120px;border-radius:24px;box-shadow:0 6px 0 #0002;border:3px solid #fff}
+  .colorChoices,.choiceGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:min(650px,100%);margin:auto}
+  .choiceGrid.grid6{grid-template-columns:repeat(3,1fr)}
+  .colorChoice{min-height:100px;border-radius:24px;box-shadow:0 6px 0 #0002;border:3px solid #fff}
   .colorChoice:active{transform:translateY(4px);box-shadow:0 2px 0 #0002}
-  .animalChoice{background:#fff;border-radius:24px;min-height:120px;box-shadow:0 6px 0 #eadfca;font-size:60px}
+  .animalChoice{background:#fff;border-radius:24px;min-height:100px;box-shadow:0 6px 0 #eadfca;font-size:50px}
   .animalChoice:active{transform:translateY(4px);box-shadow:0 2px 0 #eadfca}
   
   .balloon{position:absolute;border-radius:50% 50% 46% 46%;width:76px;height:92px;box-shadow:inset -10px -12px 15px #0002, inset 8px 8px 10px #fff8;animation:floatUp linear forwards}
@@ -64,12 +72,10 @@
   .tapTarget{position:absolute;font-size:72px;user-select:none}
   .tapTarget:active{transform:scale(.85)}
 
-  /* 📖 えほんスタイル */
   .bookCard{flex:1;background:#fff;border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;box-shadow:0 6px 0 #eadfca;cursor:pointer;text-align:center;gap:16px}
   .bookIcon{font-size:clamp(80px,25vw,130px)}
   .bookText{font-size:clamp(20px,5vw,28px);font-weight:900}
 
-  /* 🎨 おえかきスタイル */
   .drawArea{flex:1;background:#fff;border-radius:24px;position:relative;touch-action:none;box-shadow:inset 0 0 0 4px #eadfca}
   canvas{width:100%;height:100%;border-radius:24px;display:block}
   .drawTools{display:flex;gap:10px;justify-content:center;margin-top:10px}
@@ -80,7 +86,7 @@
   .confetti{position:absolute;width:12px;height:12px;top:-20px;animation:confettiFall 2.5s ease-out forwards}
   @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}
 
-  @media(min-width:700px){.games{grid-template-columns:repeat(3,1fr)}.colorChoices,.choiceGrid{grid-template-columns:repeat(4,1fr)}}
+  @media(min-width:700px){.games{grid-template-columns:repeat(3,1fr)}.colorChoices,.choiceGrid{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
@@ -89,7 +95,7 @@
   <div class="title" onclick="playWelcomeVoice()">🌈 るりちゃんのゲームランド</div>
   <div class="header-right">
     <button class="bgm-btn" id="bgmToggleBtn" onclick="toggleBGM()">🎵 ON</button>
-    <div class="version-tag">v1.2</div>
+    <div class="version-tag">v1.3</div>
     <div class="stars">⭐ <span id="stars">0</span></div>
   </div>
 </header>
@@ -99,16 +105,27 @@
   <h1 onclick="playWelcomeVoice()">たのしく あそぼう！</h1>
   <div class="subtitle">すきなゲームをタッチしてね 👆</div>
   <div class="games">
-    <button class="gameBtn" onclick="startColor()"><div class="gameIcon">🌈</div><div class="gameName">いろタッチ</div><div class="gameDesc">おなじ いろ</div></button>
-    <button class="gameBtn" onclick="startAnimal()"><div class="gameIcon">🐶</div><div class="gameName">どうぶつ</div><div class="gameDesc">どうぶつ さがし</div></button>
-    <button class="gameBtn" onclick="startNumber()"><div class="gameIcon">🔢</div><div class="gameName">すうじ</div><div class="gameDesc">すうじ タッチ</div></button>
-    <button class="gameBtn" onclick="startShape()"><div class="gameIcon">🔷</div><div class="gameName">かたち</div><div class="gameDesc">かたち さがし</div></button>
+    <button class="gameBtn" onclick="selectDifficulty('color')"><div class="gameIcon">🌈</div><div class="gameName">いろタッチ</div><div class="gameDesc">おなじ いろ</div></button>
+    <button class="gameBtn" onclick="selectDifficulty('animal')"><div class="gameIcon">🐶</div><div class="gameName">どうぶつ</div><div class="gameDesc">どうぶつ さがし</div></button>
+    <button class="gameBtn" onclick="selectDifficulty('number')"><div class="gameIcon">🔢</div><div class="gameName">すうじ</div><div class="gameDesc">すうじ タッチ</div></button>
+    <button class="gameBtn" onclick="selectDifficulty('shape')"><div class="gameIcon">🔷</div><div class="gameName">かたち</div><div class="gameDesc">かたち さがし</div></button>
     <button class="gameBtn" onclick="startBalloons()"><div class="gameIcon">🎈</div><div class="gameName">ふうせん</div><div class="gameDesc">タッチで パーン</div></button>
     <button class="gameBtn" onclick="startStars()"><div class="gameIcon">⭐</div><div class="gameName">ほしあつめ</div><div class="gameDesc">ほしを タッチ</div></button>
     <button class="gameBtn" onclick="startCars()"><div class="gameIcon">🚗</div><div class="gameName">くるま</div><div class="gameDesc">くるま タッチ</div></button>
     <button class="gameBtn" onclick="startBook()"><div class="gameIcon">📖</div><div class="gameName">えほん</div><div class="gameDesc">おはなし タッチ</div></button>
     <button class="gameBtn" onclick="startDraw()"><div class="gameIcon">🎨</div><div class="gameName">おえかき</div><div class="gameDesc">じゆうに かこう</div></button>
   </div>
+</section>
+
+<!-- 難易度選択画面 -->
+<section id="difficulty" class="screen">
+<button class="back" onclick="goHome()">← もどる</button>
+<div class="gameTitle">むずかしさを えらんでね！</div>
+<div class="diff-select">
+  <button class="diff-btn easy" onclick="startGameWithDiff('easy')">🌱 かんたん (4択)</button>
+  <button class="diff-btn normal" onclick="startGameWithDiff('normal')">🌸 ふつう (6択)</button>
+  <button class="diff-btn hard" onclick="startGameWithDiff('hard')">🔥 むずかしい (6択+難読)</button>
+</div>
 </section>
 
 <section id="color" class="screen">
@@ -167,7 +184,6 @@
 </div>
 </section>
 
-<!-- 📖 えほん画面 -->
 <section id="book" class="screen">
 <button class="back" onclick="goHome()">← もどる</button>
 <div class="gameTitle">📖 えほん</div>
@@ -178,7 +194,6 @@
 </div>
 </section>
 
-<!-- 🎨 おえかき画面 -->
 <section id="draw" class="screen">
 <button class="back" onclick="goHome()">← もどる</button>
 <div class="gameTitle">🎨 じゆうにおえかき</div>
@@ -206,11 +221,10 @@ let stars=Number(localStorage.getItem('ruriStars')||0);
 $('stars').textContent=stars;
 let timer=null;
 let welcomeLoopTimer=null;
-
-// 🎵 音声重複防止用グローバル変数
 let currentVoiceAudio = null;
+let currentTargetGame = '';
+let currentDifficulty = 'easy';
 
-// 🎵 共通オーディオコンテキスト（iOS音量無視対策）
 let audioCtx = null;
 let bgmGainNode = null;
 let bgmAudio = new Audio('bgm.mp3');
@@ -260,9 +274,7 @@ function toggleBGM() {
 
 function addStar(n=1){ stars+=n; localStorage.setItem('ruriStars',stars); $('stars').textContent=stars; }
 
-// 🎵 WAV音声再生関数（絶対重ならないように修正）
 function playVoice(filename, fallbackText) {
-  // 現在再生中の音声があればストップ
   if (currentVoiceAudio) {
     currentVoiceAudio.pause();
     currentVoiceAudio.currentTime = 0;
@@ -294,7 +306,6 @@ function playVoice(filename, fallbackText) {
   });
 }
 
-// 🏠 ホームウェルカム音声再生
 function playWelcomeVoice() {
   if ($('home').classList.contains('active')) {
     playVoice('welcome.wav', 'るりちゃんのゲームランドへようこそ！いっしょにあそぼう！');
@@ -327,7 +338,6 @@ window.addEventListener('click', function initAudio() {
   }
 }, { once: true });
 
-// 🎵 効果音
 function playSound(type) {
   try {
     initAudioContext();
@@ -391,25 +401,54 @@ function shuffle(a){ return a.sort(()=>Math.random()-.5) }
 
 startWelcomeLoop();
 
-/* 色タッチ (10種類に拡充) */
+/* 難易度選択処理 */
+function selectDifficulty(gameType) {
+  currentTargetGame = gameType;
+  show('difficulty');
+  playVoice('difficulty.wav', 'なんいどを えらんでね！');
+}
+
+function startGameWithDiff(diff) {
+  currentDifficulty = diff;
+  if(currentTargetGame === 'color') startColor();
+  else if(currentTargetGame === 'animal') startAnimal();
+  else if(currentTargetGame === 'number') startNumber();
+  else if(currentTargetGame === 'shape') startShape();
+}
+
+function getChoiceCount() {
+  return (currentDifficulty === 'easy') ? 4 : 6;
+}
+
+/* 色タッチ (10種類) */
 const colors=[
-  ['あか','#ff5b5b','🔴','aka.wav'],
-  ['あお','#4aa8ff','🔵','ao.wav'],
-  ['きいろ','#ffd84a','🟡','kiiro.wav'],
-  ['みどり','#5dcc78','🟢','midori.wav'],
-  ['むらさき','#a875e8','🟣','murasaki.wav'],
-  ['オレンジ','#ff9d4d','🟠','orange.wav'],
-  ['ピンク','#ff9ebb','🩷','pink.wav'],
-  ['しろ','#ffffff','⚪','shiro.wav'],
-  ['くろ','#333333','🖤','kuro.wav'],
-  ['ちゃいろ','#a52a2a','🟤','chairo.wav']
+  ['あか','#ff5b5b','🔴','aka.wav','赤'],
+  ['あお','#4aa8ff','🔵','ao.wav','青'],
+  ['きいろ','#ffd84a','🟡','kiiro.wav','黄色'],
+  ['みどり','#5dcc78','🟢','midori.wav','緑'],
+  ['むらさき','#a875e8','🟣','murasaki.wav','紫'],
+  ['オレンジ','#ff9d4d','🟠','orange.wav','Orange'],
+  ['ピンク','#ff9ebb','🩷','pink.wav','Pink'],
+  ['しろ','#ffffff','⚪','shiro.wav','白'],
+  ['くろ','#333333','🖤','kuro.wav','黒'],
+  ['ちゃいろ','#a52a2a','🟤','chairo.wav','茶色']
 ];
 let colorAnswer;
 function startColor(){ show('color'); nextColor(); }
 function nextColor(){
-  const selected=shuffle([...colors]).slice(0,4); colorAnswer=selected[Math.floor(Math.random()*4)];
-  $('colorPrompt').textContent=`${colorAnswer[0]}を タッチしてね！ ${colorAnswer[2]}`;
-  $('colorChoices').innerHTML='';
+  const count = getChoiceCount();
+  const selected=shuffle([...colors]).slice(0,count); colorAnswer=selected[Math.floor(Math.random()*count)];
+  
+  let labelText = colorAnswer[0];
+  if (currentDifficulty === 'hard') {
+    labelText = colorAnswer[4]; // むずかしい場合は漢字/英語表現
+  }
+
+  $('colorPrompt').textContent=`${labelText}を タッチしてね！ ${colorAnswer[2]}`;
+  const choicesEl = $('colorChoices');
+  choicesEl.innerHTML='';
+  if(count === 6) choicesEl.classList.add('grid6'); else choicesEl.classList.remove('grid6');
+
   shuffle(selected).forEach(c=>{
     const b=document.createElement('button'); b.className='colorChoice'; b.style.background=c[1];
     b.onclick=()=>{
@@ -422,35 +461,45 @@ function nextColor(){
         playVoice('mouikkai.wav', 'もういっかい');
       }
     };
-    $('colorChoices').appendChild(b);
+    choicesEl.appendChild(b);
   });
   playVoice(colorAnswer[3], colorAnswer[0]+'をタッチしてね');
 }
 
-/* どうぶつタッチ (15種類に拡充) */
+/* どうぶつタッチ (15種類) */
 const animals=[
-  ['いぬ','🐶','わんわん！','inu.wav'],
-  ['ねこ','🐱','にゃー！','neko.wav'],
-  ['うさぎ','🐰','ぴょん！','usagi.wav'],
-  ['くま','🐻','がおー！','kuma.wav'],
-  ['ぞう','🐘','ぱおーん！','zou.wav'],
-  ['ライオン','🦁','がおー！','lion.wav'],
-  ['ぶた','🐷','ぶー！','buta.wav'],
-  ['ひよこ','🐥','ぴよぴよ！','hiyoko.wav'],
-  ['さる','🐵','うっきー！','saru.wav'],
-  ['パンダ','🐼','ごろごろ！','panda.wav'],
-  ['ペンギン','🐧','ぺたぺた！','penguin.wav'],
-  ['かえる','🐸','けろけろ！','kaeru.wav'],
-  ['きりん','🦒','すくすく！','kirin.wav'],
-  ['うま','🐴','ひひーん！','uma.wav'],
-  ['とら','🐯','がおー！','tora.wav']
+  ['いぬ','🐶','わんわん！','inu.wav','犬'],
+  ['ねこ','🐱','にゃー！','neko.wav','猫'],
+  ['うさぎ','🐰','ぴょん！','usagi.wav','兎'],
+  ['くま','🐻','がおー！','kuma.wav','熊'],
+  ['ぞう','🐘','ぱおーん！','zou.wav','象'],
+  ['ライオン','🦁','がおー！','lion.wav','Lion'],
+  ['ぶた','🐷','ぶー！','buta.wav','豚'],
+  ['ひよこ','🐥','ぴよぴよ！','hiyoko.wav','雛'],
+  ['さる','🐵','うっきー！','saru.wav','猿'],
+  ['パンダ','🐼','ごろごろ！','panda.wav','Panda'],
+  ['ペンギン','🐧','ぺたぺた！','penguin.wav','Penguin'],
+  ['かえる','🐸','けろけろ！','kaeru.wav','蛙'],
+  ['きりん','🦒','すくすく！','kirin.wav','麒麟'],
+  ['うま','🐴','ひひーん！','uma.wav','馬'],
+  ['とら','🐯','がおー！','tora.wav','虎']
 ];
 let animalAnswer;
 function startAnimal(){show('animal');nextAnimal()}
 function nextAnimal(){
-  const selected=shuffle([...animals]).slice(0,4);animalAnswer=selected[Math.floor(Math.random()*4)];
-  $('animalPrompt').textContent=`${animalAnswer[0]}さんは どこ？ ${animalAnswer[2]}`;
-  $('animalChoices').innerHTML='';
+  const count = getChoiceCount();
+  const selected=shuffle([...animals]).slice(0,count);animalAnswer=selected[Math.floor(Math.random()*count)];
+  
+  let labelText = animalAnswer[0];
+  if (currentDifficulty === 'hard') {
+    labelText = animalAnswer[4];
+  }
+
+  $('animalPrompt').textContent=`${labelText}さんは どこ？ ${animalAnswer[2]}`;
+  const choicesEl = $('animalChoices');
+  choicesEl.innerHTML='';
+  if(count === 6) choicesEl.classList.add('grid6'); else choicesEl.classList.remove('grid6');
+
   shuffle(selected).forEach(a=>{
     const b=document.createElement('button');b.className='animalChoice';b.textContent=a[1];
     b.onclick=()=>{
@@ -460,32 +509,42 @@ function nextAnimal(){
         playSound('wrong');feedback('animalFeedback','もういっかい！');playVoice('mouikkai.wav', 'もういっかい');
       }
     };
-    $('animalChoices').appendChild(b);
+    choicesEl.appendChild(b);
   });
   playVoice(animalAnswer[3], animalAnswer[0]+'はどこかな？');
 }
 
-/* すうじタッチ (1～10に拡充) */
+/* すうじタッチ (1～10) */
 const numbers=[
-  ['いち','1','num1.wav'],
-  ['に','2','num2.wav'],
-  ['さん','3','num3.wav'],
-  ['よん','4','num4.wav'],
-  ['ご','5','num5.wav'],
-  ['ろく','6','num6.wav'],
-  ['なな','7','num7.wav'],
-  ['はち','8','num8.wav'],
-  ['きゅう','9','num9.wav'],
-  ['じゅう','10','num10.wav']
+  ['いち','1','num1.wav','一'],
+  ['に','2','num2.wav','二'],
+  ['さん','3','num3.wav','三'],
+  ['よん','4','num4.wav','四'],
+  ['ご','5','num5.wav','五'],
+  ['ろく','6','num6.wav','六'],
+  ['なな','7','num7.wav','七'],
+  ['はち','8','num8.wav','八'],
+  ['きゅう','9','num9.wav','九'],
+  ['じゅう','10','num10.wav','十']
 ];
 let numberAnswer;
 function startNumber(){show('numberGame');nextNumber()}
 function nextNumber(){
-  const selected=shuffle([...numbers]).slice(0,4);numberAnswer=selected[Math.floor(Math.random()*4)];
-  $('numberPrompt').textContent=`「${numberAnswer[1]}」を タッチしてね！`;
-  $('numberChoices').innerHTML='';
+  const count = getChoiceCount();
+  const selected=shuffle([...numbers]).slice(0,count);numberAnswer=selected[Math.floor(Math.random()*count)];
+  
+  let labelText = numberAnswer[1];
+  if (currentDifficulty === 'hard') {
+    labelText = `${numberAnswer[0]}（${numberAnswer[3]}）`; // むずかしい場合は「ひらがな（漢数字）」
+  }
+
+  $('numberPrompt').textContent=`「${labelText}」を タッチしてね！`;
+  const choicesEl = $('numberChoices');
+  choicesEl.innerHTML='';
+  if(count === 6) choicesEl.classList.add('grid6'); else choicesEl.classList.remove('grid6');
+
   shuffle(selected).forEach(n=>{
-    const b=document.createElement('button');b.className='animalChoice';b.textContent=n[1];b.style.fontSize='50px';b.style.fontWeight='900';
+    const b=document.createElement('button');b.className='animalChoice';b.textContent=n[1];b.style.fontSize='46px';b.style.fontWeight='900';
     b.onclick=()=>{
       if(n===numberAnswer){
         playSound('correct');launchConfetti();addStar();feedback('numberFeedback','⭕ せいかい！');playVoice('seikai.wav', 'せいかい！');setTimeout(nextNumber,1200);
@@ -493,30 +552,40 @@ function nextNumber(){
         playSound('wrong');feedback('numberFeedback','もういっかい！');playVoice('mouikkai.wav', 'もういっかい');
       }
     };
-    $('numberChoices').appendChild(b);
+    choicesEl.appendChild(b);
   });
   playVoice(numberAnswer[2], numberAnswer[1]+'をタッチしてね');
 }
 
-/* かたちタッチ (10種類に拡充) */
+/* かたちタッチ (10種類) */
 const shapes=[
-  ['まる','🔴','maru.wav'],
-  ['さんかく','🔺','sankaku.wav'],
-  ['しかく','🟦','sikaku.wav'],
-  ['ほし','⭐','hoshi.wav'],
-  ['ハート','🩷','heart.wav'],
-  ['ダイヤ','🔷','dia.wav'],
-  ['おつきさま','🌙','tsuki.wav'],
-  ['おはな','🌸','hana.wav'],
-  ['おにぎり','🍙','onigiri.wav'],
-  ['りんご','🍎','ringo.wav']
+  ['まる','🔴','maru.wav','丸'],
+  ['さんかく','🔺','sankaku.wav','三角'],
+  ['しかく','🟦','sikaku.wav','四角'],
+  ['ほし','⭐','hoshi.wav','星'],
+  ['ハート','🩷','heart.wav','Heart'],
+  ['ダイヤ','🔷','dia.wav','Diamond'],
+  ['おつきさま','🌙','tsuki.wav','月'],
+  ['おはな','🌸','hana.wav','花'],
+  ['おにぎり','🍙','onigiri.wav','おむすび'],
+  ['りんご','🍎','ringo.wav','Apple']
 ];
 let shapeAnswer;
 function startShape(){show('shapeGame');nextShape()}
 function nextShape(){
-  const selected=shuffle([...shapes]).slice(0,4);shapeAnswer=selected[Math.floor(Math.random()*4)];
-  $('shapePrompt').textContent=`${shapeAnswer[0]}を タッチしてね！`;
-  $('shapeChoices').innerHTML='';
+  const count = getChoiceCount();
+  const selected=shuffle([...shapes]).slice(0,count);shapeAnswer=selected[Math.floor(Math.random()*count)];
+  
+  let labelText = shapeAnswer[0];
+  if (currentDifficulty === 'hard') {
+    labelText = shapeAnswer[3];
+  }
+
+  $('shapePrompt').textContent=`${labelText}を タッチしてね！`;
+  const choicesEl = $('shapeChoices');
+  choicesEl.innerHTML='';
+  if(count === 6) choicesEl.classList.add('grid6'); else choicesEl.classList.remove('grid6');
+
   shuffle(selected).forEach(s=>{
     const b=document.createElement('button');b.className='animalChoice';b.textContent=s[1];
     b.onclick=()=>{
@@ -526,7 +595,7 @@ function nextShape(){
         playSound('wrong');feedback('shapeFeedback','もういっかい！');playVoice('mouikkai.wav', 'もういっかい');
       }
     };
-    $('shapeChoices').appendChild(b);
+    choicesEl.appendChild(b);
   });
   playVoice(shapeAnswer[2], shapeAnswer[0]+'をタッチしてね');
 }
